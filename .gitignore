@@ -1,0 +1,17 @@
+__pycache__/
+.idea/
+.vscode/
+.code/
+.cache/
+.tmp*/
+.local/
+tmp*/
+generated*/
+models/
+output/
+results/
+private/
+*.pyc
+*.pyx
+*.swp
+*.bin
