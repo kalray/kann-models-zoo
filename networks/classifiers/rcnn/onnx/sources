@@ -1,0 +1,7 @@
+lecture note reference:
+Rich feature hierarchies for accurate object detection and semantic segmentation, https://arxiv.org/pdf/1311.2524.pdf
+
+repository or link:
+https://github.com/onnx/models/blob/main/vision/classification/rcnn_ilsvrc13/model/rcnn-ilsvrc13-9.onnx
+
+citations:

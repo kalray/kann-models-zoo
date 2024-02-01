@@ -1,0 +1,7 @@
+lecture note reference:
+MobileNetV2: Inverted Residuals and Linear Bottlenecks, https://arxiv.org/pdf/1801.04381
+
+repository or link:
+https://pytorch.org/vision/stable/models/generated/torchvision.models.mobilenet_v2.html#torchvision.models.mobilenet_v2
+
+citations:

@@ -1,0 +1,7 @@
+lecture note reference:
+- EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks, https://arxiv.org/pdf/1905.11946
+
+repository or link:
+- https://pytorch.org/vision/stable/models/generated/torchvision.models.efficientnet_b0.html#torchvision.models.efficientnet_b0
+
+citations:

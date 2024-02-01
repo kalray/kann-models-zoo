@@ -1,0 +1,7 @@
+lecture note reference:
+MnasNet: Platform-Aware Neural Architecture Search for Mobile, https://arxiv.org/pdf/1807.11626.pdf
+
+repository or link:
+https://pytorch.org/vision/stable/models/generated/torchvision.models.mnasnet1_0.html#torchvision.models.mnasnet1_0
+
+citations:
