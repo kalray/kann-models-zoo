@@ -1,0 +1,22 @@
+lecture note reference:
+- YOLOv4: Optimal Speed and Accuracy of Object Detection, https://arxiv.org/pdf/2004.10934.pdf
+
+repository or direct link:
+- repository: https://github.com/WongKinYiu/PyTorch_YOLOv4
+- cfg: https://github.com/WongKinYiu/PyTorch_YOLOv4/blob/master/cfg/yolov4-csp-s-mish.cfg
+- weights: https://drive.google.com/file/d/1730MvuVhTttVJGk4ftN1zql9z7U4iQ6U/view?usp=sharing
+
+citations:
+@article{bochkovskiy2020yolov4,
+  title={{YOLOv4}: Optimal Speed and Accuracy of Object Detection},
+  author={Bochkovskiy, Alexey and Wang, Chien-Yao and Liao, Hong-Yuan Mark},
+  journal={arXiv preprint arXiv:2004.10934},
+  year={2020}
+}
+@inproceedings{wang2020cspnet,
+  title={{CSPNet}: A New Backbone That Can Enhance Learning Capability of {CNN}},
+  author={Wang, Chien-Yao and Mark Liao, Hong-Yuan and Wu, Yueh-Hua and Chen, Ping-Yang and Hsieh, Jun-Wei and Yeh, I-Hau},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops},
+  pages={390--391},
+  year={2020}
+}

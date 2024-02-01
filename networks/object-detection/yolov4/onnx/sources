@@ -1,0 +1,7 @@
+lecture note reference:
+- YOLOv4: Optimal Speed and Accuracy of Object Detection, https://arxiv.org/pdf/2004.10934.pdf
+
+repository or direct link:
+- https://github.com/onnx/models/blob/main/vision/object_detection_segmentation/yolov4/model/yolov4.onnx
+
+citations:

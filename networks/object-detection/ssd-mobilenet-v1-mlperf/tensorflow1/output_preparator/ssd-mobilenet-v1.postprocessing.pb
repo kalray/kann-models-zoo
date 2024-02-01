@@ -1,0 +1,1 @@
+/work2/common/kann/MLPerf_models/SSD-MobileNet/post_processing.frozen.pb

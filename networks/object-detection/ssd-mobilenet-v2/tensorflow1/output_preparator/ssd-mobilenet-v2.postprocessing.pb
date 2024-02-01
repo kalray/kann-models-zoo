@@ -1,0 +1,1 @@
+/work2/common/kann/tensorflow_models/ssd_mobilenet_v2_coco_2018_03_29/post_processing.frozen.pb

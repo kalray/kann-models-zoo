@@ -1,0 +1,48 @@
+name: efficientdet-d0
+framework: tflite
+tflite_file: models/efficientdet-d0.tflite
+
+input_nodes_name:
+    - image
+input_nodes_shape:
+    - [512, 1, 512, 3]
+
+output_nodes_name:
+    - class_net/class-predict/BiasAdd
+    - class_net/class-predict_1/BiasAdd
+    - class_net/class-predict_2/BiasAdd
+    - class_net/class-predict_3/BiasAdd
+    - class_net/class-predict_4/BiasAdd
+    - box_net/box-predict/BiasAdd
+    - box_net/box-predict_1/BiasAdd
+    - box_net/box-predict_2/BiasAdd
+    - box_net/box-predict_3/BiasAdd
+    - box_net/box-predict_4/BiasAdd
+output_nodes_shape:
+    - [1, 64, 64, 810]
+    - [1, 32, 32, 810]
+    - [1, 16, 16, 810]
+    - [1, 8, 8, 810]
+    - [1, 4, 4, 810]
+    - [1, 64, 64, 36]
+    - [1, 32, 32, 36]
+    - [1, 16, 16, 36]
+    - [1, 8, 8, 36]
+    - [1, 4, 4, 36]
+
+generate_options:
+    arch: "kv3-2"
+    quantize_fp32_to_fp16: false
+    data_buffer_size: 6240000
+    code_buffer_size: 20000
+    threshold_image_to_ddr: 10000000
+    threshold_max_params_size: 500000
+    ddr_images_tiles_size: 65535
+    splitdepth_corrector_ratio: 256.0
+    max_live_range: 20
+
+extra_data:
+    classes: classes.txt
+    input_preparators:
+        - input_preparator.py
+    output_preparator: output_preparator
