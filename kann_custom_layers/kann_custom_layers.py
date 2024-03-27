@@ -1,5 +1,4 @@
 import kann
-import numpy
 import logging
 
 from layers.selu import SeLU
@@ -189,22 +188,25 @@ def onnx_split_parser_callback(neural_network, prev_imgs, onnx_node, model_info)
     return layer, dstimgs
 
 
-def onnx_silu_parser_callback(neural_network, prev_imgs, onnx_node, model_info):
+def onnx_silu_parser_callback(neural_network, prev_imgs, onnx_nodes, model_info):
     # This callback will only be called for 'SiLU' ONNX layers, because of the
     # key associated to it in the onnx_parser_callbacks dict.
-    assert onnx_node.op_type == 'Silu'
+    sigmoid_node, mul_node = onnx_nodes
+    assert sigmoid_node.op_type == 'Sigmoid'
+    assert mul_node.op_type == 'Mul'
     assert len(prev_imgs) == 1
+    alpha = sigmoid_node.attrs.get('alpha', 1.)
     h, w, c, b = prev_imgs[0].dims
     dstimg = kann.images.image_smem.ImageSMEM(
-        neural_network, onnx_node.outputs[0], h, w, c, b)
+        neural_network, mul_node.outputs[0], h, w, c, b)
     srcview = kann.subview.Subview.fromImage(prev_imgs[0])
     dstview = kann.subview.Subview.fromImage(dstimg)
     assert srcview.count == dstview.count
     layer = SiLU(
         neural_network,
-        onnx_node.name,
-        srcview, dstview,
-        onnx_node.name,
+        sigmoid_node.name + "_" + mul_node.name,
+        srcview, dstview, mul_node.name,
+        alpha,
         simd=True
     )
     return layer, dstimg
@@ -226,30 +228,6 @@ def onnx_hardsigmoid_parser_callback(neural_network, prev_imgs, onnx_node, model
         alpha=0.166667,  # torch scale value, use 0.2 for ONNX runtime
         beta=0.5,
         simd=True)
-
-    # Using builtin KaNN kernel (slower)
-    # dstimg_0 = kann.images.image_smem.ImageSMEM(
-    #     neural_network, onnx_node.outputs[0] + "-0", h, w, c, b)
-    # layer = kann.layers.scaling_vector.ScalingVector(
-    #     neural_network,
-    #     onnx_node.name + "-0",
-    #     kann.subview.Subview.fromImage(prev_imgs[0]),
-    #     kann.subview.Subview.fromImage(dstimg_0),
-    #     onnx_node.name + "-0",
-    #     mul=kann.layers.scaling_vector.ScalingVector.onnx_expand_constant(numpy.float32(0.2), (h, w, c, b)),
-    #     add=kann.layers.scaling_vector.ScalingVector.onnx_expand_constant(numpy.float32(0.5), (h, w, c, b)),
-    # )
-    # dstimg = kann.images.image_smem.ImageSMEM(
-    #     neural_network, onnx_node.outputs[0], h, w, c, b)
-    # layer = kann.layers.saturate.Saturate(
-    #     neural_network,
-    #     onnx_node.name,
-    #     kann.subview.Subview.fromImage(dstimg_0),
-    #     kann.subview.Subview.fromImage(dstimg),
-    #     onnx_node.name,
-    #     lower_bound=numpy.float32(0.0),
-    #     upper_bound=numpy.float32(1.0)
-    # )
 
     return layer, dstimg
 
