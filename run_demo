@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
+
+FILEPATH=$(realpath "$0")
+CDIR=$(dirname "$FILEPATH")
+
 TARGET=$1
 USAGE="$0 <target(mppa, cpu)> <generated(mppa) or yaml file(cpu) path> <source image or video>"
 
 # shellcheck disable=SC2120
 run_without_L2cache() {
     echo "running without L2 cache"
-    POCL_MPPA_FIRMWARE_NAME=ocl_fw_l1.elf python utils/kann_video_demo.py \
+    POCL_MPPA_FIRMWARE_NAME=ocl_fw_l1.elf python $CDIR/utils/kann_video_demo.py \
        --binaries-dir=$KANN_BIN_DIR/ \
        --kernel-binaries-dir=$KANN_POCL_DIR/ \
        $GENERATED_DIR $SOURCE_PATH "${@}" || return 1
@@ -14,7 +18,7 @@ run_without_L2cache() {
 # shellcheck disable=SC2120
 run_with_L2cache() {
     echo "running with L2 cache"
-    python utils/kann_video_demo.py \
+    python $CDIR/utils/kann_video_demo.py \
        --binaries-dir=$KANN_BIN_DIR/ \
        --kernel-binaries-dir=$KANN_POCL_DIR/ \
        $GENERATED_DIR $SOURCE_PATH "${@}" || return 1
@@ -33,7 +37,7 @@ for i in "${@}"; do
         echo "*** MPPA(R) ***"
         echo "  if target is \"mppa\", the script kann_video_demo.py will be used"
         echo "  Please use L2=OFF or L2=0 to disable the L2 cache for proper execution (default: L2 is ON)"
-        python utils/kann_video_demo.py --help
+        python $CDIR/utils/kann_video_demo.py --help
         exit 0
     fi
 done

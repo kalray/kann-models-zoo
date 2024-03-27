@@ -140,17 +140,6 @@ def show_frame(window_name, frame):
         return False # escape key
     return True
 
-def array_from_fifo_old(fd, dtype, count):
-    arr = np.empty(count, dtype=dtype)
-    nb_read = fd.readinto(memoryview(arr))
-    if nb_read < arr.nbytes:
-        # Assuming fd is a fifo, readinto() only returns prematurely because of
-        # closed pipe. Even on large data, readinto() will hide multiple
-        # underlying syscalls. On contrary, readinto1() could return early.
-        raise Exception("Read failed, EOF or pipe closed")
-    return arr
-
-
 def array_from_fifo(fd, dtype, count):
     nb_bytes = np.dtype((dtype, count)).itemsize
     buf = b''
@@ -164,7 +153,7 @@ def array_from_fifo(fd, dtype, count):
     return np.frombuffer(buf, dtype)
 
 
-def read_kann_output(kann_out):
+def read_kann_output(kann_out, batching):
     # Ordered to keep the alphabetical order
     data = collections.OrderedDict()
     for name, output in kann_out.items():
@@ -172,10 +161,11 @@ def read_kann_output(kann_out):
         size = output['size']
         dtype = output['dtype']
         try:
-            data[name] = array_from_fifo(file, dtype=dtype, count=size)
+            for batch in range(batching - 1):
+                array_from_fifo(file, dtype=dtype, count=size)           # just trash the batching over 1
+            data[name] = array_from_fifo(file, dtype=dtype, count=size)  # keep one output
         except:
-            raise Exception("Reading of {} values in {} format from {} failed"
-                .format(size, dtype.__name__, name))
+            raise Exception("Reading of {} values in {} format from {} failed".format(size, dtype.__name__, name))
     return data
 
 def run_demo(
@@ -185,7 +175,7 @@ def run_demo(
         fifos_in:dict,
         fifos_out:dict,
         window_info,
-        parallel:bool,
+        batching_:bool = False,
         display:bool = True,
         out_video:bool = False,
         out_img_path:str = None,
@@ -193,12 +183,11 @@ def run_demo(
     ):
     """
     @param config   Content of <network>.yaml file.
-    @param parallel Enable parallel mode to post process the previous frame
-                    during KaNN execution of the current one on the MPPA.
     @param src_reader SourceReader object abstracting the source type and
                       replay mode.
     @param fifos_in The name of the fifo to use as input of kann.
     @param fifos_out The name of the fifo to use as output of kann.
+    @param batching The batch size
     @param display  Enable graphical display of processed frames.
     @return         The number of frames processed.
     """
@@ -210,8 +199,17 @@ def run_demo(
 
     # load the input_preparator as a python module
     sys.path.append(generated_dir)
-    prepare = __import__(config['input_preparator'][:-3])
-    output_preparator = importlib.import_module(config['output_preparator'] + '.output_preparator')
+    if len(config['input_preparators']) > 1:
+        raise Exception("Provided network requires {} input preparators. "
+                        "Only network with 1 input preparator are supported.".format(
+                        len(config['input_preparators'])))
+    prepare = __import__(os.path.relpath(config['input_preparators'][0])[:-3])
+    output_preparator = importlib.import_module(os.path.relpath(config['output_preparator']).replace('/', '.') + '.output_preparator')
+
+    if isinstance(config['forced_batch_size'], int):
+        batching = config['forced_batch_size']
+    else:
+        batching = batching_
 
     # Open the fifo to interact with kann
     # Ordered to keep the alphabetical order
@@ -264,7 +262,7 @@ def run_demo(
         # instance, thus the input preparator prepare all the inputs base on one
         # source.
         # TODO : support multiple sources and multiple inputs
-        prepared = prepare.prepare_img(frame)
+        prepared = np.repeat(prepare.prepare_img(frame), batching)
         if not isinstance(prepared, (tuple, list)):
             prepared = [prepared]
         assert len(prepared) == len(kann_in)
@@ -280,58 +278,32 @@ def run_demo(
                 "but {} is expected".format(p.dtype, i['dtype'].__name__)
             p.tofile(i['fifo'], '')
 
-        if parallel:
-            prev_t3 = t[3]
-            t[3] = time.perf_counter() # POST-PROCESS PREV FRAME ###############
-            if prev_frame is not None:
-                prev_frame = output_preparator.post_process(config, prev_frame,
-                                                            out)
+        t[3] = time.perf_counter() # READ PROCESSED FRAME ##################
+        out = read_kann_output(kann_out, batching)
 
-                t[4] = time.perf_counter() # ANNOTATE PREV FRAME ###############
-                annotate_frame(prev_frame, t[7] - prev_t3)
+        t[4] = time.perf_counter() # POST-PROCESS FRAME ####################
+        frame = output_preparator.post_process(
+            config, frame, out, device='mppa', dbg=verbose)
 
-                t[5] = time.perf_counter()  # DISPLAY PREV FRAME ###############
-                if display:
-                    if not show_frame(window_name, prev_frame):
-                        break
+        t[5] = time.perf_counter()  # ANNOTATE FRAME #######################
+        annotate_frame(frame, t[4] - t[3])
 
-            t[6] = time.perf_counter() # READ PROCESSED FRAME ##################
-            out = read_kann_output(kann_out)
+        t[6] = time.perf_counter()  # DISPLAY FRAME ########################
+        if display:
+            if not show_frame(window_name, frame):
+                break
 
-            t[7] = time.perf_counter() # END ###################################
-            log("frame: {}\tread: {:0.2f}ms\tpre: {:0.2f}ms\tsend: {:0.2f}ms\t"
-                "kann: {:0.2f}ms\tpost: {:0.2f}ms\tdraw: {:0.2f}ms\t"
-                "show: {:0.2f}ms\ttotal: {:0.2f}ms ({:0.1f}fps)".format(
-                frames_counter,
-                1000*(t[1]-t[0]), 1000*(t[2]-t[1]), 1000*(t[3]-t[2]),
-                1000*(t[7]-t[3]), 1000*(t[6]-t[3]), 1000*(t[5]-t[4]),
-                1000*(t[6]-t[5]), 1000*(t[7]-t[0]), 1.0/(t[7]-t[0])))
-        else:
-            t[3] = time.perf_counter() # READ PROCESSED FRAME ##################
-            out = read_kann_output(kann_out)
+        t[7] = time.perf_counter() # END ###################################
+        log("frame:{}/{}\tread: {:0.2f}ms\tpre: {:0.2f}ms\tsend: {:0.2f}ms\t"
+            "kann: {:0.2f}ms\tpost: {:0.2f}ms\tdraw: {:0.2f}ms\t"
+            "show: {:0.2f}ms\ttotal: {:0.2f}ms ({:0.1f}fps)".format(
+            frames_counter + 1, nframes,
+            1000*(t[1]-t[0]), 1000*(t[2]-t[1]), 1000*(t[3]-t[2]),
+            1000*(t[4]-t[3]), 1000*(t[5]-t[4]), 1000*(t[6]-t[5]),
+            1000*(t[7]-t[6]), 1000*(t[7]-t[0]), 1.0/(t[7]-t[0])))
 
-            t[4] = time.perf_counter() # POST-PROCESS FRAME ####################
-            frame = output_preparator.post_process(config, frame, out, dbg=verbose)
-
-            t[5] = time.perf_counter()  # ANNOTATE FRAME #######################
-            annotate_frame(frame, t[4] - t[3])
-
-            t[6] = time.perf_counter()  # DISPLAY FRAME ########################
-            if display:
-                if not show_frame(window_name, frame):
-                    break
-
-            t[7] = time.perf_counter() # END ###################################
-            log("frame:{}/{}\tread: {:0.2f}ms\tpre: {:0.2f}ms\tsend: {:0.2f}ms\t"
-                "kann: {:0.2f}ms\tpost: {:0.2f}ms\tdraw: {:0.2f}ms\t"
-                "show: {:0.2f}ms\ttotal: {:0.2f}ms ({:0.1f}fps)".format(
-                frames_counter + 1, nframes,
-                1000*(t[1]-t[0]), 1000*(t[2]-t[1]), 1000*(t[3]-t[2]),
-                1000*(t[4]-t[3]), 1000*(t[5]-t[4]), 1000*(t[6]-t[5]),
-                1000*(t[7]-t[6]), 1000*(t[7]-t[0]), 1.0/(t[7]-t[0])))
-
-            if out_video is not None:
-                out_video.write(frame)
+        if out_video is not None:
+            out_video.write(frame)
 
     if display:
         cv2.destroyWindow(window_name)
@@ -356,12 +328,6 @@ def run_demo(
     'source',
     type=click.STRING,
     required=True)
-@click.option(
-    '--parallel',
-    is_flag=True,
-    show_default=True,
-    help="Enable parallel mode to post process the previous frame during KaNN "
-         "execution of the current one on the MPPA.")
 @click.option(
     '--binaries-dir',
     type=click.Path(exists=True, file_okay=False),
@@ -401,9 +367,13 @@ def run_demo(
     '--save-img',
     is_flag=True,
     help="Save last frame with output predictions as video file.")
+@click.option(
+    '--batching',
+    type=int,
+    default=1,
+    help="Set the batch size, default batching is 1.")
 def main(generated_dir,
          source,
-         parallel,
          binaries_dir,
          kernel_binaries_dir,
          local_install_dir,
@@ -411,6 +381,7 @@ def main(generated_dir,
          no_replay,
          save_video,
          save_img,
+         batching,
          verbose):
     """ Kalray Neural Network demonstrator.
 
@@ -421,9 +392,6 @@ def main(generated_dir,
     \t- An image sequence (eg. img_%02d.jpg, which will read samples like
     img_00.jpg, img_01.jpg, img_02.jpg, ...).
     """
-
-    if parallel:
-        log("RUNNING PARALLEL MODE")
 
     # find <network>.yaml file in generated_dir
     config_files = glob.glob(os.path.join(generated_dir, "*.yaml"))
@@ -497,7 +465,7 @@ def main(generated_dir,
         config = yaml.load(f, Loader=yaml.FullLoader)
     extra_data = config['extra_data']
     config['classes_file'] = os.path.join(generated_dir, extra_data['classes'])
-    config['input_preparator'] = extra_data['input_preparators'][0]
+    config['input_preparators'] = extra_data['input_preparators']
     config['output_preparator'] = extra_data['output_preparator']
     if not "input_nodes_dtype" in config:
         config['input_nodes_dtype'] = ["float32"] * len(config['input_nodes_name'])
@@ -539,7 +507,6 @@ def main(generated_dir,
         # start the KANN program
         kann_args = [
             os.path.join(binaries_dir, "kann_opencl_cnn"),
-            #kernel_binaries_dir,
             serialized_params_file,
             fifos_dir,
         ]
@@ -556,18 +523,18 @@ def main(generated_dir,
         kann_proc = Popen(kann_args, bufsize=-1,
             env=dict(os.environ, KANN_POCL_FILE=os.path.join(kernel_binaries_dir, "mppa_kann_opencl.cl.pocl")))
         # Manage window position and size
-        window_info = getTiledWindowsInfo()
+        window_info = None if no_display else getTiledWindowsInfo()
         assert (no_display or window_info is not None)
 
         # run demo
-        nbr_frames = run_demo(
+        run_demo(
             config,
             generated_dir,
             src_reader,
             fifos_in,
             fifos_out,
             window_info,
-            parallel,
+            batching,
             not no_display,
             out_video,
             out_img_path,
