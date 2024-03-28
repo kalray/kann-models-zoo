@@ -106,7 +106,7 @@ def filter_out_boxes(prediction, conf_thres=0.1, iou_thres=0.6, max_nms=1000, ma
         # Detections matrix nx6 (xyxy, conf, cls)
         conf = numpy.amax(cls, axis=1, keepdims=True)
         j = numpy.expand_dims(numpy.where(cls == conf)[1], axis=1)
-        x = numpy.concatenate((box, conf, j.astype(numpy.float)), axis=1)
+        x = numpy.concatenate((box, conf, j.astype(numpy.float32)), axis=1)
         x = x[x[:, 4] > conf_thres]
         # If none remain process next image
         if not x.shape[0]:  # number of boxes
