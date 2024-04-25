@@ -7,7 +7,7 @@
 
 #define VECTOR_SIZE 8
 #define DTYPE_VEC   float16x8_t
-#define FUNC        silu_tf16_tf16
+#define FUNC        silu_fast_tf16_tf16
 #define SIMD_FUNC   silu_fastx8_tf16_tf16
 
 

@@ -1,4 +1,5 @@
 import kann
+import numpy
 import logging
 
 from layers.selu import SeLU
@@ -129,11 +130,26 @@ def onnx_split_parser_callback(neural_network, prev_imgs, onnx_node, model_info)
     if onnx_node.op_type != "Split":
         raise ValueError("op should be Split but is {} instead".format(onnx_node.op_type))
 
-    assert len(prev_imgs) == 1
-
-    srcimg = prev_imgs[0]
-    onnx_axis = onnx_node.attrs.get('axis', 0)
-    split_dim = onnx_node.attrs.get('split', None)
+    if len(prev_imgs) == 1:
+        if not isinstance(prev_imgs[0], kann.images.image.Image):
+            logging.warning('Split with more than 2 inputs is not supported')
+            raise NotImplemented
+        srcimg = prev_imgs[0]
+        split_dim = onnx_node.attrs.get('split', None)
+        onnx_axis = onnx_node.attrs.get('axis', 0)
+    elif len(prev_imgs) == 2:
+        if not isinstance(prev_imgs[0], kann.images.image.Image):
+            logging.warning('Split with more than 2 inputs is not supported')
+            raise NotImplemented
+        if not isinstance(prev_imgs[1], numpy.ndarray):
+            logging.warning('Split with more than 2 inputs is not supported')
+            raise NotImplemented
+        srcimg = prev_imgs[0]
+        split_dim = tuple(int(i) for i in prev_imgs[1])
+        onnx_axis = onnx_node.attrs.get('axis', 0)
+    else:
+        logging.warning('Split with more than 2 inputs is not supported')
+        raise NotImplemented
 
     onnx_to_kann_dims = [3, 2, 0, 1]
     onnx_to_kann_str = ["height", "width", "depth", "batch"]
