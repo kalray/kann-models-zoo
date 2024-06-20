@@ -6,23 +6,21 @@ import os
 import itertools as it
 import math
 from collections import OrderedDict
-from PIL import Image
 
 
 IMG_RES = 2 ** 8
-IMG_WIDTH, IMG_HEIGHT = 512, 512
+IMG_SIZE = (480, 640)
 
 
-def prepare_img(img, out_dtype=numpy.float32):
-    mat = numpy.asarray(img, dtype=numpy.uint8, order='C')
-    mat = numpy.flip(mat, axis=2)
+def prepare_img(img0, out_dtype=numpy.float32):
+    new_h, new_w = IMG_SIZE
+    img = numpy.asarray(img0, dtype=numpy.uint8, order='C')
     # resize dimension order is (height,width) in numpy but (width, height) in opencv
-    if img.shape[0:2] != (IMG_HEIGHT, IMG_WIDTH):
-        mat = cv2.resize(mat, (IMG_HEIGHT, IMG_WIDTH), interpolation=cv2.INTER_CUBIC)
-        # mat = numpy.array(Image.fromarray(mat).resize((IMG_HEIGHT, IMG_WIDTH)))
+    if img0.shape[0:2] != (new_h, new_w):
+        img = cv2.resize(img0, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
     # Get the Values between 0 and 1 - BGR to RGB
-    # mat = mat[..., ::-1] / (IMG_RES - 1)
-    return mat.astype(out_dtype)
+    img = img / out_dtype(255.)
+    return img
 
 
 def image_stream(filename):
