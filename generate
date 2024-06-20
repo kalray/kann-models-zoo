@@ -1,52 +1,8 @@
 #!/usr/bin/env bash
-TARGET=$1
-USAGE="$0 <yaml file path>"
-URL_PATH="/nfs/users/qmuller/modelsKalray"
 
-for i in "${@}"; do
-    if [[ $i =~ "help" ]]; then
-        echo ""
-        echo "  Usage: ${USAGE}"
-        echo ""
-        kann generate --help
-        exit 0
-    fi
-done
+FILEPATH=$(realpath "$0")
+CDIR=$(dirname "$FILEPATH")
 
-cd "$(dirname "$0")" || exit 1
-network_dir=$(dirname ${TARGET})
-framework=$(basename "${network_dir}")
-if [[ $framework == "onnx" ]];then
-    onnx_file_path=$(cat "${TARGET}" | grep "onnx_model: ")
-    onnx_file_path=${onnx_file_path#*"onnx_model: "}
-    model_file_name=$(basename ${onnx_file_path})
-    model_file_path=${network_dir}/${onnx_file_path}
-elif [[ $framework == "tensorflow1" ]];then
-    pb_file_path=$(cat "${TARGET}" | grep "frozen_pb: ")
-    pb_file_path=${pb_file_path#*"frozen_pb: "}
-    model_file_name=$(basename ${pb_file_path})
-    model_file_path=${network_dir}/${pb_file_path}
-else
-    echo "${framework} is not supported yet, please use directly: $ kann generate ..."
-fi
-model_dir=$(dirname ${model_file_path})
-echo "target model: ${model_file_path}"
-echo "model_dir: ${model_dir}"
-if [[ ! -f $model_file_path ]];then
-    echo "Models: ${onnx_file_path} does not exists, downloading model from path:"
-    download_models="${URL_PATH}/${model_file_path}"
-    echo "   ${download_models}"
-    if [[ -f $download_models ]]; then
-        curl -O -C - "file://$download_models" --progress-bar --verbose
-        mkdir -p "${model_dir}"
-        mv "${model_file_name}" "${model_file_path}"
-        echo "Running: $ kann generate ${TARGET} ${@:2}"
-        kann generate "$TARGET" ${@:2}
-    else
-        echo "File does not exists, exiting. Generation aborted ..."
-    fi
-else
-    echo "Running: $ kann generate ${TARGET} ${@:2}"
-    kann generate "$TARGET" ${@:2}
-fi
+echo "$CDIR/utils/kann_generate.py ${*:1}"
+python3 $CDIR/utils/kann_generate.py "${@:1}" || exit 1
 exit 0

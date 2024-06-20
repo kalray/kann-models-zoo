@@ -97,6 +97,7 @@ class SourceReader:
                     continue # previous image is still there, keep waiting...
                 break
 
+
 def getTiledWindowsInfo():
     monitors = get_monitors()
     if len(monitors) == 0:
@@ -109,35 +110,37 @@ def getTiledWindowsInfo():
         return {"size": {'h': monitor.height, 'w': monitor.width},
                 "pos": {'x': 0, 'y': 0}}
 
+
 def draw_text(frame, lines, pos):
     font = cv2.FONT_HERSHEY_SIMPLEX
-    scale = 0.5
+    scale = frame.shape[0] / 640
     thick = 1
     white = (255, 255, 255)
     black = (0, 0, 0)
-    for line in lines:
-        textsize, baseline = cv2.getTextSize(line, font, scale, thick)
-        origin = (pos[0], pos[1] + textsize[1] + baseline)
-        cv2.rectangle(
-            frame,
-            (origin[0], origin[1] + baseline),
-            (origin[0] + textsize[0] + baseline, origin[1] - textsize[1]),
-            white,
-            -1)
+
+    textsize, baseline = cv2.getTextSize(lines[0], font, scale, thick)
+    x1, y1 = pos[0], pos[1]
+    x2, y2 = pos[0] + textsize[0] + baseline, pos[1] - (textsize[1] + baseline) * len(lines)
+    cv2.rectangle(frame, (x1, y1), (x2, y2), white, -1)
+    for i, line in enumerate(lines):
+        origin = (pos[0], (pos[1] - (textsize[1] + baseline) * i))
         cv2.putText(frame, line, origin, font, scale, black, thick, cv2.LINE_AA)
 
-def annotate_frame(frame, delta_t):
+
+def annotate_frame(frame, delta_t, title):
     framerate = 1.0 / delta_t
-    delta_ms = 1000 * delta_t
-    lines = ["speed: {0:0.1f} fps - {1:0.2f} ms".format(framerate, delta_ms)]
-    draw_text(frame, lines, (10, 10))
+    lines = ["Algorithm: {:15s}".format(title)]
+    lines += ["Speed: {:.1f} fps".format(framerate)]
+    origin = (10, frame.shape[0] - 10)
+    draw_text(frame, lines, origin)
+
 
 def show_frame(window_name, frame):
     if cv2.getWindowProperty(window_name, cv2.WND_PROP_VISIBLE) < 1:
-        return False # window closed
+        return False  # window closed
     cv2.imshow(window_name, frame)
-    if cv2.waitKey(1) == 27: # wait for 1ms
-        return False # escape key
+    if cv2.waitKey(1) == 27:  # wait for 1ms
+        return False  # escape key
     return True
 
 def array_from_fifo(fd, dtype, count):
@@ -204,7 +207,8 @@ def run_demo(
                         "Only network with 1 input preparator are supported.".format(
                         len(config['input_preparators'])))
     prepare = __import__(os.path.relpath(config['input_preparators'][0])[:-3])
-    output_preparator = importlib.import_module(os.path.relpath(config['output_preparator']).replace('/', '.') + '.output_preparator')
+    output_preparator = importlib.import_module(
+        os.path.relpath(config['output_preparator']).replace('/', '.') + '.output_preparator')
 
     if isinstance(config['forced_batch_size'], int):
         batching = config['forced_batch_size']
@@ -224,7 +228,7 @@ def run_demo(
     for b in buffers:
         if b in config['output_nodes_name']:
             log("Opening output fifo for CNN's output : '{}'".format(b))
-            kann_out[b] = {'fifo': os.fdopen(os.open(fifos_out[b], os.O_RDONLY), 'rb', 0)}
+            kann_out[b] = {'fifo': os.fdopen(os.open(fifos_out[b], os.O_RDONLY), 'rb')}
     for b, shape, dtype in zip(config['output_nodes_name'], config['output_nodes_shape'], config['output_nodes_dtype']):
         kann_out[b]['size'] = reduce(lambda x, y: x*y, shape)
         kann_out[b]['dtype'] = getattr(np, dtype)
@@ -233,14 +237,16 @@ def run_demo(
     if display:
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         cv2.moveWindow(window_name, window_info['pos']['x'], window_info['pos']['y'])
-        if src_reader.width < 512 or src_reader.height < 512:
-            ratio = src_reader.width / src_reader.height
-            if src_reader.width >= src_reader.height:
-                cv2.resizeWindow(window_name, int(512 * ratio), 512)
-            else:
-                cv2.resizeWindow(window_name, 512, int(512 * ratio))
+        win_size = 640
+        ratio = src_reader.width / src_reader.height
+        if src_reader.width >= src_reader.height:
+            cv2.resizeWindow(window_name, win_size, int(win_size / ratio))
+            log("Source frame is W{}xH{}, OpenCV window is resized to {}x{}".format(
+                src_reader.width, src_reader.height, win_size, int(win_size / ratio)))
         else:
-            cv2.resizeWindow(window_name, src_reader.width, src_reader.height)
+            cv2.resizeWindow(window_name, win_size, int(win_size * ratio))
+            log("Source frame is W{}xH{}, OpenCV window is resized to {}x{}".format(
+                src_reader.width, src_reader.height, int(win_size * ratio), win_size))
 
     nframes = int(src_reader.cap.get(cv2.CAP_PROP_FRAME_COUNT))
     t = [0] * 8
@@ -262,7 +268,7 @@ def run_demo(
         # instance, thus the input preparator prepare all the inputs base on one
         # source.
         # TODO : support multiple sources and multiple inputs
-        prepared = np.repeat(prepare.prepare_img(frame), batching)
+        prepared = prepare.prepare_img(frame)
         if not isinstance(prepared, (tuple, list)):
             prepared = [prepared]
         assert len(prepared) == len(kann_in)
@@ -270,7 +276,7 @@ def run_demo(
         t[2] = time.perf_counter() # SEND TO KANN RUNTIME ######################
 
         # Risky since we can't ensure the order that the input preparator output
-        # the data in the same order that alphabatical order.
+        # the data in the same order that alphabetical order.
         # TODO : Manage input and sources
         for p, i in zip(prepared, kann_in.values()):
             assert p.dtype == i['dtype'], \
@@ -286,7 +292,7 @@ def run_demo(
             config, frame, out, device='mppa', dbg=verbose)
 
         t[5] = time.perf_counter()  # ANNOTATE FRAME #######################
-        annotate_frame(frame, t[4] - t[3])
+        annotate_frame(frame, t[4] - t[3], config['name'])  # FPS: KaNN
 
         t[6] = time.perf_counter()  # DISPLAY FRAME ########################
         if display:
@@ -296,11 +302,19 @@ def run_demo(
         t[7] = time.perf_counter() # END ###################################
         log("frame:{}/{}\tread: {:0.2f}ms\tpre: {:0.2f}ms\tsend: {:0.2f}ms\t"
             "kann: {:0.2f}ms\tpost: {:0.2f}ms\tdraw: {:0.2f}ms\t"
-            "show: {:0.2f}ms\ttotal: {:0.2f}ms ({:0.1f}fps)".format(
+            "show: {:0.2f}ms\ttotal: {:0.2f}ms ({:0.1f}fps, kann:{:0.1f}fps)".format(
             frames_counter + 1, nframes,
-            1000*(t[1]-t[0]), 1000*(t[2]-t[1]), 1000*(t[3]-t[2]),
-            1000*(t[4]-t[3]), 1000*(t[5]-t[4]), 1000*(t[6]-t[5]),
-            1000*(t[7]-t[6]), 1000*(t[7]-t[0]), 1.0/(t[7]-t[0])))
+            1000*(t[1]-t[0]),  # read (ms)
+            1000*(t[2]-t[1]),  # preprocessing (ms)
+            1000*(t[3]-t[2]),  # send data to pipe (ms)
+            1000*(t[4]-t[3]),  # kann + read data from pipe (ms)
+            1000*(t[5]-t[4]),  # post processing (ms)
+            1000*(t[6]-t[5]),  # annotate frame (ms)
+            1000*(t[7]-t[6]),  # show frame + post processed predictions (ms)
+            1000*(t[7]-t[0]),  # total (ms)
+            1. / (t[7]-t[0]),  # total (fps)
+            1. / (t[4]-t[3]))  # kann + read data from pipe (fps)
+        )
 
         if out_video is not None:
             out_video.write(frame)

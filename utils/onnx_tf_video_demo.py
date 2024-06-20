@@ -405,7 +405,7 @@ def main(
         if config['framework'] == "tensorflow":
             import tensorflow as tf
             try:
-                pb_path = os.path.join(os.path.dirname(network_config), config['saved_model'])
+                pb_path = os.path.join(os.path.dirname(network_config), config['tensorflow_saved_model'])
                 sess = tf.saved_model.load(os.path.join(pb_path))
             except:
                 import tensorflow.compat.v1 as tf
@@ -413,7 +413,7 @@ def main(
                 from tensorflow.python.platform import gfile
                 from tensorflow.python.framework import ops
                 from tensorflow.core.framework import graph_pb2
-                pb_path = os.path.join(os.path.dirname(network_config), config['frozen_pb'])
+                pb_path = os.path.join(os.path.dirname(network_config), config['tensorflow_frozen_pb'])
                 session_conf = tf.ConfigProto(intra_op_parallelism_threads=8, inter_op_parallelism_threads=8)
                 with session.Session(graph=ops.Graph(), config=session_conf) as sess:
                     # Import freeze model
