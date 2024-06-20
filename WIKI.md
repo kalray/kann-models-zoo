@@ -2,49 +2,54 @@
 
 <img width="50%" src="./utils/materials/mppa-processor.jpg"></a></br>
 
-![ACE5.1.0](https://img.shields.io/badge/Coolidge2-ACE5.1.0-g)
-![Classifiers](https://img.shields.io/badge/Classifiers-28-blue)
-![Object-Detect](https://img.shields.io/badge/Object%20detection-28-blue)
-![Segmentation](https://img.shields.io/badge/Segmentation-09-blue)</br>
+![ACE5.2.0](https://img.shields.io/badge/Coolidge2-ACE5.2.0-g)
+![Classifiers](https://img.shields.io/badge/Classifiers-29-blue)
+![Object-Detect](https://img.shields.io/badge/Object%20detection-31-blue)
+![Segmentation](https://img.shields.io/badge/Segmentation-10-blue)</br>
 
-The repository purposes neural networks models __ready to compile & run__ on MPPA®.</br>
-This is complementary to KaNN™ SDK for model generation and enhance __AI solutions__.
+
+The KaNN™ Model Zoo repository provides a list of neural networks models __ready to compile & run__ on MPPA®
+manycore processor. This comes on top of KaNN™ tool for model generation and enhance __AI solutions__ onto Kalray
+processor.
 
 ## Table of contents
-<!-- TOC -->
-  * [Kalray neural networks (KaNN) description](#kalray-neural-networks-kann-description)
-  * [Pre-requisites: configure the SW environment](#pre-requisites-configure-the-sw-environment)
-  * [How models are packaged](#how-models-are-packaged)
-  * [Generate a model to run on MPPA®](#generate-a-model-to-run-on-mppa)
-  * [Run inference from kann-video-demo](#run-inference-from-kann-video-demo)
-  * [Custom Layers for extended neural networks](#custom-layers-for-extended-neural-networks)
-<!-- TOC -->
+* [Kalray neural networks (KaNN) framework description](#kalray-neural-networks-kann-framework-description)
+* [Pre-requisites: configure the SW environment](#pre-requisites-configure-the-sw-environment)
+* [How models are packaged](#how-models-are-packaged)
+* [Generate a model to run on the processor (MPPA®)](#generate-a-model-to-run-on-the-processor-mppa)
+* [Evaluate the neural network inference on the MPPA®](#evaluate-the-neural-network-inference-on-the-mppa)
+* [Run neural network as a demo](#run-neural-network-as-a-demo)
+* [Custom Layers for extended neural networks](#custom-layers-for-extended-neural-networks)
 
-## Kalray neural networks (KaNN) description
+## Kalray neural networks (KaNN) framework description
 
 <img width="500" src="./utils/materials/CNN.png"></a></br>
 
-KaNN is a Kalray software purpose, available in the SDK AccessCore Embedded (ACE) offer. It leverages the possibility \
-to parse and analyze a Convolution Neural Network (figure above) from different SW environments \
-such as ONNX, Tensorflow, TFlite, PyTorch; and generate a MPPA code to achieve the best performance efficiency. \
-This repository does not contain any information about the use of hte API, but it helps to deploy AI solutions. \
-For details, please do not hesitate to read the documentation 😏 or contact us directly.
+KaNN is a Kalray software purpose, available in the SDK AccessCore Embedded (ACE) offer. It 
+leverages the possibility to parse and analyze a Convolution Neural Network (figure above) 
+from different SW environments such as ONNX, Tensorflow, TFlite, PyTorch; and generate a 
+MPPA code to achieve the best performance efficiency. This repository does not contain any 
+information about the use of hte API, but it helps to deploy AI solutions. For details, 
+please do not hesitate to read the documentation 😏 or contact us directly.
 
 So, to deploy your solution from an identified neural networks, the steps are all easy 😃 :
 1. From a CNN, generate a model (no HW dependencies)
-2. Run model from demo application (python + cpp host application, included in the repository and ACE software)
+2. Run model from demo application (python + cpp host application, included in the repository
+   and ACE software)
 
 ## Pre-requisites: configure the SW environment
 
-Please source the Kalray Neural Network™ python environment:</br>
-``` $ source $HOME/.local/share/kann/venv*/bin/activate ```
+Source the Kalray's AccessCore® environment, at the following location:
+```bash
+ source /opt/kalray/accesscore/kalray.sh
+ ```
+and check that `$KALRAY_TOOLCHAIN_DIR` is not empty.
 
 If it does not exist, please configure a specific virtual python environment:
 ```bash
 export KANN_ENV=$HOME/.local/share/python3-kann-venv
 python3 -m venv $KANN_ENV
 ```
-
 Source your python environment:
 ```bash 
 source $KANN_ENV/bin/activate
@@ -61,6 +66,23 @@ pip install -r requirements.txt --extra-index-url https://download.pytorch.org/w
 Please see kalray lounge install procedure detailed at:
 [link](https://lounge.kalrayinc.com/hc/en-us/articles/14613836001308-ACE-5-2-0-Content-installation-release-note-and-Getting-Started-Coolidge-v2)
 
+Source your python environment:
+```bash 
+source $KANN_ENV/bin/activate
+```
+
+Install local KaNN wheel and its dependencies (it supposed that release is install in $HOME):
+```bash
+pip install $HOME/ACE5.2.0/KaNN-generator/kann-5.2.0-py3*.whl
+```
+Finally, the python requirements of the repo:
+```bash 
+pip install torch==2.1.0+cpu --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+```
+Please see kalray lounge install procedure detailed at:
+[link](https://lounge.kalrayinc.com/hc/en-us/articles/14613836001308-ACE-5-2-0-Content-installation-release-note-and-Getting-Started-Coolidge-v2)
+
 
 ## How models are packaged
 
@@ -72,10 +94,10 @@ Each model is packaged to be compiled and run for KaNN SDK. It is one DIRectory,
     * network_f16.yaml :  batch 1 - FP16 - nominal performance
     * network_i8.yaml :   batch 1 - FP16/Q-INT8 - nominal performance
 - sources : model reference paper (arxiv, iccv, ..), open-source repository (github, ...)
-- license : associated to the model proposed 
+- license : associated to the model proposed
 
 
-## Generate a model to run on MPPA®
+## Generate a model to run on the processor (MPPA®)
 
 Use the following command to generate an model to run on the MPPA®:
 ```bash
@@ -89,75 +111,118 @@ It will provide you into the path directory `generated_path_dir`:
 
 Please refer to Kalray documentation and KaNN user manual provided for more details !
 
-## Run inference from kann-video-demo
-Use the following command to start quickly the inference of the IR model just generated:
+## Evaluate the neural network inference on the MPPA®
+
+Kalray's toolchain integrates its own host application `kann_opencl_cnn`to run compiled model.
+it will be called using the ./run script to evaluate the performance of the Neural Network
+on the MPPA®.
+
+Use the following command to start quickly the inference:
 ```bash
-$ ./run_demo mppa <generated_path_dir> ./utils/sources/street_0.jpg
+$ ./run infer <generated_path_dir>
 ```
 
-To disable the L2 cache at runtime:
+Use the following command to start quickly the inference on 25 frames:
 ```bash
-$ L2=0 ./run_demo mppa <generated_path_dir> ./utils/sources/street_0.jpg
+$ ./run --nb-frames=25 infer <generated_path_dir>
+```
+
+(ONNX only) Use the following command to generate a new neural network with new input size H,W:
+```bash
+$ ./run infer <generated_path_dir> --force-hw=640,480
+```
+
+Use the following command to get more options (data, PoCL file custom, etc):
+```bash
+$ ./run --help        # for general options
+# or
+$ ./run infer --help  # for infer subcommand options
+```
+
+## Run neural network as a demo
+Use the following command to start quickly the inference of the IR model just generated:
+```bash
+$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg
+```
+
+To disable the L2 cache at runtime (now implicit, a message will warn you):
+```bash
+$ ./run --l2-off demo <generated_path_dir> ./utils/sources/street/street_0.jpg
 ```
 
 To disable the display:
 ```bash
-$ ./run_demo mppa <generated_path_dir> ./utils/sources/street_0.jpg --no-display
+$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg --no-display
 ```
 
-To disable the replay:
+To disable the replay (for a video or a image):
 ```bash
-$ ./run_demo mppa <generated_path_dir> ./utils/sources/street_0.jpg --no-replay
+$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg --no-replay
+```
+
+Save the last frame annotated into the current dir:
+```bash
+$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg --no-replay --save-img
 ```
 
 To show help, use:
 ```bash
-$ ./run_demo --help or ./run_demo help
+$ ./run demo --help
 ```
 
 To run on the CPU target (in order to compare results):
 ```bash
-$ ./run_demo cpu <configuration_file.yaml> ./utils/sources/street_0.jpg --verbose
+$ ./run demo --device=cpu <configuration_file.yaml> ./utils/sources/street_0.jpg --verbose
 ```
+
+Demonstration scripts are based on python API, host application does not use pipelining for example.
+The video pipeline is not FULLY OPTIMIZED and requires custom developments to benefit of the full
+performance of the MPPA®, depending of your own environment and system. Do not hesitate to contact
+our services <support@kalrayinc.com> to optimize your solution.
 
 ## Custom Layers for extended neural networks
 
-According the Kalray's documentation in KaNN manual, users have the possibility to integrate \
-custom layers in case of layer are not supported by KaNN. So, follow those steps (more details in KaNN user manual):
+According to the Kalray's documentation in KaNN manual, users have the possibility to integrate
+custom layers in case of layer are not supported by KaNN. So, follow those steps (more details 
+in KaNN user manual):
 1. Implement the python function callback to ensure that KaNN generator is able to support the Layer
-2. Imlement the layer python class to ensure that arguments are matching with the C function
+2. Implement the layer python class to ensure that arguments are matching with the C function
 3. Implement C function into the SimpleMapping macro, provided in the example.
 4. Build C function with Kalray makefile and reuse it for inference
 
-To ensure to use all extended neural networks provided in the repository, such as YOLOv8 for example \
-the DIR `kann_custom_layers` contents the support of :
- * SeLU (KaNN example)
- * Split
- * Slice
+To ensure to use all extended neural networks provided in the repository, such as YOLOv8 for 
+example the DIR `kann_custom_layers` contents the support of :
  * SiLU
  * Mish
+ * HardSigmoid
 
 Please find the few steps to use it, for example YOLOv8:
-1. Patch the kann-generator wheel into the python environment
+1. Configure sw environment
 ```bash
 $ source /opt/kalray/accesscore/kalray.sh
-(kvxtools)
-$ source $HOME/.local/share/kann/venv-*/bin/activate
-(venv)(kvxtools)
-$ ./kann_custom_layers/patch-kann.sh
 ```
 
-2. Then, buid custom kernels for MPPA:
+Considering that python environment is set to : `$HOME/.local/share/python3-kann-venv`
 ```bash
-$ make -BC kann_custom_layers O=$PWD/output
+# (kvxtools)
+source $HOME/.local/share/python3-kann-venv/bin/activate
+```
+
+2. Then, buid custom kernels to run over the MPPA®:
+```bash
+make -BC kann_custom_layers O=$PWD/output
 ```
 
 2. Generate model:
 ```bash
-$ PYTHONPATH=$PWD/kann_custom_layers ./generate $PWD/networks/object-detection/yolov8n/onnx/network_best.yaml -d yolov8n
+PYTHONPATH=$PWD/kann_custom_layers ./generate $PWD/networks/object-detection/yolov8n/onnx/network_best.yaml -d yolov8n
 ```
 
-3. Run demo with generated DIR and new kernels compiled (.pocl file) for the MPPA(R)
+3. Run demo with generated DIR and new kernels compiled (.pocl file) for the MPPA®
 ```bash
-$ L2=0 KANN_POCL_DIR=$PWD/output/opencl_kernels/ ./run_demo mppa yolov8n ./utils/sources/street/street_6.jpg
+./run --pocl-dir=$PWD/output/opencl_kernels demo --device=mppa yolov8n ./utils/sources/cat.jpg --verbose
+```
+or on the cpu directly:
+```bash
+./run demo --device=cpu yolov8n ./utils/sources/cat.jpg --verbose
 ```

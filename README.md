@@ -1,73 +1,88 @@
 # Kalray Neural Network Models
 
 <img width="25%" src="./utils/materials/kalray_logo.png"></a></br>
-![ACE5.1.0](https://img.shields.io/badge/Coolidge2-ACE5.1.0-g)
-![Classifiers](https://img.shields.io/badge/Classifiers-27-blue)
-![Object-Detect](https://img.shields.io/badge/Object%20detection-25-blue)
-![Segmentation](https://img.shields.io/badge/Segmentation-10-blue)</br>
+![ACE5.2.0](https://img.shields.io/badge/Coolidge2-ACE--5.2.0-g)
+![Classifiers](https://img.shields.io/badge/Classifiers-29-blue)
+![Object-Detect](https://img.shields.io/badge/Object%20detection-28-blue)
+![Segmentation](https://img.shields.io/badge/Segmentation-8-blue)</br>
 
-The KaNN™ Model Zoo repository provides a list of neural networks models __ready to compile & run__ on Kalray MPPA® manycore processor.</br>
-This comes on top of KaNN™ tool for model generation and enhance __AI solutions__ onto Kalray processor.
+The repository purposes neural networks models __ready to compile & run__ on MPPA®.
+
+The KaNN™ Model Zoo repository provides a list of neural networks models __ready to compile & run__ on MPPA®
+manycore processor. This comes on top of KaNN™ tool for model generation and enhance __AI solutions__ onto Kalray
+processor.
 
 
 ## Contents
 
-Models are divided into 3 types:
-- [classifiers](./networks/classifiers/README.md)
+To quickly deploy a neural network on the MPPA®, a WIKI note is available [here](WIKI.md):
+* [Kalray neural networks (KaNN) framework description](WIKI.md#kalray-neural-networks-kann-framework-description)
+* [Pre-requisites: configure the SW environment](WIKI.md#pre-requisites-configure-the-sw-environment)
+* [How models are packaged](WIKI.md#how-models-are-packaged)
+* [Generate a model to run on the processor (MPPA®)](WIKI.md#generate-a-model-to-run-on-the-processor-mppa)
+* [Evaluate the neural network inference on the MPPA®](WIKI.md#evaluate-the-neural-network-inference-on-the-mppa)
+* [Run neural network as a demo](WIKI.md#run-neural-network-as-a-demo)
+* [Custom Layers for extended neural networks](WIKI.md#custom-layers-for-extended-neural-networks)
+
+
+CNN Models are divided into 3 types of Machine Vision applications:
+- [classification](./networks/classifiers/README.md)
 - [object-detection](./networks/object-detection/README.md)
 - [segmentation](./networks/segmentation/README.md)
 
-| Classification (Regnet-x-1.6g)                               | Object-detection (Yolov8n)                                    | Segmentation (Deeplabv3+)                                  |
-|--------------------------------------------------------------|---------------------------------------------------------------|------------------------------------------------------------|
-| <img height="240" src="./utils/materials/cat_class.jpg"></a> | <img height="240" src="./utils/materials/cat_detect.jpg"></a> | <img height="240" src="./utils/materials/cat_segm.jpg"></a> |
+The examples below illustrates the kind of predictions you must have:
 
-*images has been realized using model from this repository and KaNN™ SDK solution
+| Classification (Regnet-x-1.6g)                                           | Object-detection (Yolov8n)                                                | Segmentation (Deeplabv3+)                                               |
+|--------------------------------------------------------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| <img height="240" width="240" src="./utils/materials/cat_class.jpg"></a> | <img height="240" width="240" src="./utils/materials/cat_detect.jpg"></a> | <img height="240" width="240" src="./utils/materials/cat_segm.jpg"></a> |
 
-Please refer to [WIKI.md](./WIKI.md) to :
-+ Run quickly a Neural Network on the MPPA® 
-+ Deploy your AI solution
+*images has been realized with the model of this repository and KaNN™ SDK solution 
 
 ## List of Neural Networks 
 
-All networks have been categorized based on Neural Network architectures:
+All networks are proposed into selected Neural Network architectures, such as:
 
-#### __Classifiers__ : complete list can be found [here](./networks/classifiers/README.md):
+#### __Classifiers__ : complete list can be found here: [link](./networks/classifiers/README.md)
 * DenseNet
 * EfficientNet
 * Inception
-* MobileNet
-* NasNet
 * ResNet
 * RegNet
+* MobileNet
+* NasNet
 * SqueezeNet
 * VGG
 
-#### __Object-detection__ : complete list can be found [here](./networks/object-detection/README.md):
+#### __Object-detection__ : complete list can be found here: [link](./networks/object-detection/README.md)
 * EfficientDet
+* Faster-RCNN
+* FCN
 * RetinatNet
 * SSD
 * YOLO
 
-#### __Segmentation__ : complete list can be found [here](./networks/segmentation/README.md):
+#### __Segmentation__ : complete list can be found here: [link](./networks/segmentation/README.md)
 * DeeplabV3+
-* Fully Convolution Network (FCN)
-* U-Net
-* YOLO
+* Mask-RCNN
+* UNet2D
+* YOLOv8-seg
 
 
 ## Requirements
 ### Hardware requirements
-  - x86, x86_64 or ARM CPU processor
-  - 8GB DDR (minimum)
-  - 16GB HDD disk (minimum)
-  - PCIe interface (16-lane Gen4 recommended)
+Host machine(s):
+  - x86_64 CPU
+  - DDR RAM 8Go min
+  - HDD disk 32 Go min
+  - PCIe Gen3 minimum
+
+Acceleration card(s):
+  - ![A](https://img.shields.io/badge/Coolidge2-K300-g)
+  - ![A](https://img.shields.io/badge/Coolidge2-Turbocard4-g)
 
 ### Software requirements
 * ![U22](https://img.shields.io/badge/Ubuntu-22.04%20LTS-orange)
-* ![ACE](https://img.shields.io/badge/Coolidge2-ACE%205.1.0-g)
-* ![Python3.10.2](https://img.shields.io/badge/Python-3.10.2-blue)
-
-### Supported Kalray acceleration card(s)
-  - ![A](https://img.shields.io/badge/Coolidge2-K300-g)
-  - ![A](https://img.shields.io/badge/Coolidge2-Turbocard4-g)
+  ![Ker](https://img.shields.io/badge/Linux%20Kernel-5.15.0-red)
+* ![ACE](https://img.shields.io/badge/Coolidge2-ACE--5.2.0-g)
+* ![Python](https://img.shields.io/badge/Python-≥3.10-blue)
 

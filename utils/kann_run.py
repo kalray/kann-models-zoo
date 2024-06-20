@@ -1,5 +1,12 @@
 #! /usr/bin/env python3
 
+###
+# Copyright (C) 2024 Kalray SA. All rights reserved.
+# This code is Kalray proprietary and confidential.
+# Any use of the code for whatever purpose is subject
+# to specific written permission of Kalray SA.
+###
+
 import os
 import yaml
 import numpy

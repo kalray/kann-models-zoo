@@ -1,7 +1,13 @@
+###
+# Copyright (C) 2024 Kalray SA. All rights reserved.
+# This code is Kalray proprietary and confidential.
+# Any use of the code for whatever purpose is subject
+# to specific written permission of Kalray SA.
+###
+
 import kann
 import numpy
 
-# KANN-225 issue : New Custom SimpleMappingCallback
 def CustomSimpleMappingCallback(numpy_dtype):
     return kann.kernels_args_types.Struct[
         ('dst', kann.kernels_args_types.TensorAddress[numpy_dtype]),

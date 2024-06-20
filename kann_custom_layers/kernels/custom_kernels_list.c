@@ -1,5 +1,5 @@
 /***
- * @copyright Copyright (C) 2021 Kalray SA. All rights reserved.
+ * @copyright Copyright (C) 2024 Kalray SA. All rights reserved.
  * This code is Kalray proprietary and confidential.
  * Any use of the code for whatever purpose is subject
  * to specific written permission of Kalray SA.
