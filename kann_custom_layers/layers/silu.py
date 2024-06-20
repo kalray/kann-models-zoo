@@ -77,90 +77,13 @@ class SiLU(SimpleMapping):
         if kernel_dtype == kann.data_types.float16:
             if self.simd:
                 kernel = SiLUF16FastSIMD(cluster, self.original_layer_name, args)
-            elif self.fast:
-                kernel = SiLUF16Fast(cluster, self.original_layer_name, args)
             else:
-                kernel = SiLUF16(cluster, self.original_layer_name, args)
+                kernel = kann.kernels.silu.SiLUF16(cluster, self.original_layer_name, args)
         elif kernel_dtype == kann.data_types.float32:
-            kernel = SiLUF32(cluster, self.original_layer_name, args)
+            kernel = kann.kernels.silu.SiLUF32(cluster, self.original_layer_name, args)
         else:
             raise RuntimeError('unsupported dtype: {}'.format(kernel_dtype))
         self.knn.generator.write_kernel_call(kernel)
-
-
-class SiLUF32(Kernel):
-    """Python handle on SeLU FP32 C kernel."""
-    KERNEL_NAME = "mppa_kann_clus_kernel_silu_tf32_tf32"
-    ARGS_STRUCT_DTYPE = kann.kernels_args_types.Struct[
-        ('alpha', kann.kernels_args_types.Scalar[numpy.float32]),
-        ('subargs', CustomSimpleMappingCallback(numpy.float32)),
-    ]
-
-    def __init__(self, clus, layer_name, args):
-        super().__init__(clus, layer_name, args)
-        assert (args['subargs']['nb_sdim'] == len(args['subargs']['sdim']))
-
-    def get_ops(self):
-        dims = [self.args['subargs']['cdim']] + [d['count'] for d in self.args['subargs']['sdim']]
-        flop_per_point = (self.FLOP_per_EXP + self.FLOP_per_DIV + self.FLOP_per_ADD)
-        return kann.utilities.product(dims) * flop_per_point
-
-    def get_cycles(self):
-        dims = [self.args['subargs']['cdim']] + [d['count'] for d in self.args['subargs']['sdim']]
-        nb_points = kann.utilities.product(dims)
-        points_per_pe = kann.utilities.div_round_up(nb_points, self.NB_PE)
-        cycle_per_point = 50  # approximate cost of the logistic function
-        return points_per_pe * cycle_per_point
-
-
-class SiLUF16(kann.kernels.kernel.Kernel):
-    """Python handle on SiLU FP16 C kernel."""
-    KERNEL_NAME = "mppa_kann_clus_kernel_silu_tf16_tf16"
-    ARGS_STRUCT_DTYPE = kann.kernels_args_types.Struct[
-        ('alpha', kann.kernels_args_types.Scalar[numpy.float16]),
-        ('subargs', CustomSimpleMappingCallback(numpy.float16)),
-    ]
-
-    def __init__(self, clus, layer_name, args):
-        super().__init__ (clus, layer_name, args)
-        assert (args['subargs']['nb_sdim'] == len(args['subargs']['sdim']))
-
-    def get_ops(self):
-        dims = [self.args['subargs']['cdim']] + [d['count'] for d in self.args['subargs']['sdim']]
-        flop_per_point = (self.FLOP_per_EXP + self.FLOP_per_DIV + self.FLOP_per_ADD)
-        return kann.utilities.product(dims) * flop_per_point
-
-    def get_cycles(self):
-        dims = [self.args['subargs']['cdim']] + [d['count'] for d in self.args['subargs']['sdim']]
-        nb_points = kann.utilities.product(dims)
-        points_per_pe = kann.utilities.div_round_up(nb_points, self.NB_PE)
-        cycle_per_point = 50  # approximate cost of the logistic function
-        return points_per_pe * cycle_per_point
-
-
-class SiLUF16Fast(kann.kernels.kernel.Kernel):
-    """Python handle on SiLU FP16 C kernel."""
-    KERNEL_NAME = "mppa_kann_clus_kernel_silu_fast_tf16_tf16"
-    ARGS_STRUCT_DTYPE = kann.kernels_args_types.Struct[
-        ('alpha', kann.kernels_args_types.Scalar[numpy.float16]),
-        ('subargs', CustomSimpleMappingCallback(numpy.float16)),
-    ]
-
-    def __init__(self, clus, layer_name, args):
-        super().__init__(clus, layer_name, args)
-        assert (args['subargs']['nb_sdim'] == len(args['subargs']['sdim']))
-
-    def get_ops(self):
-        dims = [self.args['subargs']['cdim']] + [d['count'] for d in self.args['subargs']['sdim']]
-        flop_per_point = (self.FLOP_per_EXP + self.FLOP_per_DIV + self.FLOP_per_ADD)
-        return kann.utilities.product(dims) * flop_per_point
-
-    def get_cycles(self):
-        dims = [self.args['subargs']['cdim']] + [d['count'] for d in self.args['subargs']['sdim']]
-        nb_points = kann.utilities.product(dims)
-        points_per_pe = kann.utilities.div_round_up(nb_points, self.NB_PE)
-        cycle_per_point = 50  # approximate cost of the logistic function
-        return points_per_pe * cycle_per_point
 
 
 class SiLUF16FastSIMD(kann.kernels.kernel.Kernel):

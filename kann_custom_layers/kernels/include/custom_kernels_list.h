@@ -12,14 +12,7 @@
 // Kernel name should be of the form mppa_kann_clus_kernel_<suffix>, where only
 // the suffix is added to the list.
 #define MPPA_CUSTOM_FOREACH_KERNELS(F)                                         \
-    F(selu_tf32_tf32)                                                          \
-    F(selu_tf16_tf16)                                                          \
-    F(silu_tf32_tf32)                                                          \
-    F(silu_tf16_tf16)                                                          \
-    F(silu_fast_tf16_tf16)                                                     \
     F(silu_x8_tf16_tf16)                                                       \
-    F(mish_tf32_tf32)                                                          \
-    F(mish_tf16_tf16)                                                          \
     F(mish_x8_tf16_tf16)                                                       \
     F(hsigmoid_tf32_tf32)                                                      \
     F(hsigmoid_tf16_tf16)                                                      \

@@ -25,33 +25,72 @@ static inline float16_t fast_sigmoid(float16_t value)
     return 1.0f / (1.0f + (value > 0 ? 1.0f / e : e));
 }
 
-// FAST LOG IMPLEMENTATION FUNCTION ========================================//
-inline double fast_logf16(double a) {
-    union { double d; long long x; } u = { a };
-    return (u.x - 4606921278410026770) * 1.539095918623324e-16;
-}
+// CUSTOM LOGF, EXPF, TANHF             =====================================//
 
-// FAST EXP IMPLEMENTATION FUNCTION ========================================//
-inline double fast_expf16(double a) {
-    // Function for float32 precision
-    union { double d; long long x; } u;
-    u.x = (long long)(6497320848556798LL * a + 0x3fef127e83d16f12LL);
-    return u.d;
+/* method and constants adapted for float16 (aka _Float16):
+ in references:
+ http://martin.ankerl.com/2007/10/04/optimized-pow-approximation-for-java-and-c-c
+ https://hackage.haskell.org/package/approximate-0.2.2.1/src/cbits/fast.c
+ https://nic.schraudolph.org/pubs/Schraudolph99.pdf
+ FLOAT16 : b |  |||||  |||||||||||
+            15 14  10  9         0
+ sign : 1 bit
+ exp  : 5 bits
+ precision: 10 bits
+ coef = 1 << 10 / log(2) = 1477,
+ bias << 10 = (01111)b << 10 = 15360
+*/
 
-    // Function for float32 precision
-    // union { float d; int x; } u;
-    // u.x = (int) (12102203 * a + 1065353217);
+// EXPF FAST --
+inline float16_t _expf(float a) {
+
+    /* Function for double precision */
+    // union { double d; long long x; } u;
+    // u.x = (long long)(6497320848556798LL * a + 0x3fef127e83d16f12LL);
     // return u.d;
 
-    // Function for float16 precision
+    /* Function for float precision */
+    union { float d; int x; } u;
+    u.x = (int) (12102203 * a + 1065353217);
+    return u.d;
+
+    /* Function for float16 precision */
     // union { float16_t d; short x; } u;
     // u.x = (short)(1478 * a + 15360);
     // return u.d;
 }
 
+// LOG FAST --
+inline float16_t _logf(float a) {
+
+    /* Function for double precision */
+    // union { double d; long long x; } u = { a };
+    // return (u.x - 4606921278410026770) * 1.539095918623324e-16;
+
+    /* Function for float precision */
+    union { float d; int x; } u = { a };
+    return (u.x - 1064866805) * 8.262958405176314e-8f;
+
+    /* Function for float16 precision */
+    // union { float16_t d; short x; } u = { a };
+    // return (u.x - 15360) * 0.0006765899864682003;
+}
+
 // FAST TANH IMPLEMENTATION FUNCTION =======================================//
 inline float16_t fast_tanhf16(float16_t a) {
-    return (2 / (1 + fast_expf16(-2 * a)) - 1);
+    return (2 / (1 + _expf(-2 * a)) - 1);
+}
+
+// TANHF --
+inline float16_t _tanhf(float16_t x) {
+
+    // float16_t a = 1 + _expf(-2 * x);
+    // float16_t b = 2 / a;
+    // return b - 1;
+
+    float16_t num = _expf(x) - _expf(-x);
+    float16_t den = _expf(x) + _expf(-x);
+    return (num * __builtin_kvx_frecw(den, ".s"));
 }
 
 #endif /*COMMON_H*/
