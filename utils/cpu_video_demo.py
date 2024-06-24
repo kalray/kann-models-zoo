@@ -167,6 +167,7 @@ def run_demo(
     """
 
     global sess
+    global interpreter
 
     # read the classes file, parser of classes file is done in output_preparator
     with open(config['classes_file'], 'r') as f:
@@ -190,6 +191,11 @@ def run_demo(
         for o in config['output_nodes_name']:
             detections = graph.get_tensor_by_name(f"{o}:0")
             outputs[o] = detections
+
+    elif config['framework'] == 'tflite':
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
 
     window_name = config['name']
     if display:
@@ -231,7 +237,7 @@ def run_demo(
             out = {k: o for o, k in zip(outs, config['output_nodes_name'])}
 
             t[3] = time.perf_counter()  # POST-PROCESS FRAME ####################
-            frame = output_preparator.post_process(config, frame, out, device='cpu')
+            frame = output_preparator.post_process(config, frame, out, device='cpu', dbg=verbose)
 
             t[4] = time.perf_counter()   # ANNOTATE FRAME #######################
             annotate_frame(frame, t[3] - t[2])
@@ -292,6 +298,55 @@ def run_demo(
                     1000 * (t[6] - t[0]), 1.0 / (t[6] - t[0])))
                 if out_video is not None:
                     out_video.write(frame)
+
+    elif config['framework'] == 'tflite':
+        while True:
+            t[0] = time.perf_counter()  # CATCH FRAME ###############################
+            prev_frame = frame
+            frame = src_reader.get_frame()
+            if frame is None:
+                break
+            frames_counter += 1
+
+            t[1] = time.perf_counter()  # PRE-PROCESS FRAME #####################
+            prepared = prepare.prepare_img(frame)
+            while len(prepared.shape) < 4:
+                prepared = numpy.expand_dims(prepared, axis=0)
+            feed = {f"{config['input_nodes_name'][0]}:0": prepared}
+
+            t[2] = time.perf_counter()  # SEND TO TF RUNTIME ##################
+            hbwc  = config['input_nodes_shape'][0]
+            input_shape = (hbwc[1], hbwc[0], hbwc[2], hbwc[3])
+            interpreter.resize_tensor_input(input_details[0]['index'], input_shape)
+            interpreter.allocate_tensors()
+            interpreter.set_tensor(input_details[0]['index'], prepared)
+            interpreter.invoke()
+            num_outputs = len(config['output_nodes_name'])
+            outs = [interpreter.get_tensor(output_details[k]['index']) for k in range(num_outputs)]
+            out = {k: o for o, k in zip(outs, config['output_nodes_name'])}
+
+            t[3] = time.perf_counter()  # POST-PROCESS FRAME ####################
+            frame = output_preparator.post_process(config, frame, out, device='cpu', dbg=verbose)
+
+            t[4] = time.perf_counter()  # ANNOTATE FRAME #######################
+            annotate_frame(frame, t[3] - t[2])
+
+            t[5] = time.perf_counter()  # DISPLAY FRAME ########################
+            if display:
+                if not show_frame(window_name, frame):
+                    break
+
+            t[6] = time.perf_counter()  # END ###################################
+            log("frame:{}/{}\tread: {:0.2f}ms\tpre: {:0.2f}ms\t"
+                "tf: {:0.2f}ms\tpost: {:0.2f}ms\tdraw: {:0.2f}ms\t"
+                "show: {:0.2f}ms\ttotal: {:0.2f}ms ({:0.1f}fps)".format(
+                frames_counter + 1, nframes,
+                1000 * (t[1] - t[0]), 1000 * (t[2] - t[1]), 1000 * (t[3] - t[2]),
+                1000 * (t[4] - t[3]), 1000 * (t[5] - t[4]), 1000 * (t[6] - t[5]),
+                1000 * (t[6] - t[0]), 1.0 / (t[6] - t[0])))
+            if out_video is not None:
+                out_video.write(frame)
+
     else:
         raise NotImplementedError(f"framework {config['framework']} not implemented yet")
 
@@ -315,7 +370,7 @@ def run_demo(
     type=click.STRING,
     required=True)
 @click.option(
-    '--verbose',
+    '--verbose', '-v',
     is_flag=True,
     help="Display detection and time spent into post-process tasks")
 @click.option(
@@ -351,6 +406,7 @@ def main(
     img_00.jpg, img_01.jpg, img_02.jpg, ...).
     """
     global sess
+    global interpreter
 
     # find <network>.yaml file in generated_dir
     if not os.path.exists(network_config):
@@ -423,12 +479,16 @@ def main(
                         graph_def.ParseFromString(f.read())
                     tf.import_graph_def(graph_def, name='')
                     graph = tf.get_default_graph()
+        if config['framework'] == "tflite":
+            import tensorflow.compat.v1 as tf
+            tflite_path = os.path.join(os.path.dirname(network_config), config['tflite_file'])
+            interpreter = interpreter = tf.lite.Interpreter(tflite_path)
         # Do not use opencl to offload opencv (conflicting with kann on mppa)
         # ref T12057
         os.environ["OPENCV_OPENCL_DEVICE"] = "disabled"
         os.environ["OPENCV_OPENCL_RUNTIME"] = "null"
         # Manage window position and size
-        window_info = getTiledWindowsInfo()
+        window_info = None if no_display else getTiledWindowsInfo()
         assert (no_display or window_info is not None)
 
         # run demo

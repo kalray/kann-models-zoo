@@ -107,8 +107,9 @@ if __name__ == "__main__":
     graph = TransformGraph(graph,
             input_nodes_name, # inputs nodes
             output_nodes_name, # outputs nodes
-            ['add_default_attributes()',
-            'strip_unused_nodes()',
+            [
+            'add_default_attributes()',
+            'strip_unused_nodes(type=float, shape="-1,-1,-1,3")',
             'remove_nodes(op=Identity, op=CheckNumerics)',
             'fold_constants(ignore_errors=true)',
             'fold_batch_norms()',
@@ -118,7 +119,8 @@ if __name__ == "__main__":
             'fold_constants(ignore_errors=true)',
             'strip_unused_nodes()',
             'remove_nodes(op=Identity, op=CheckNumerics)',
-            'sort_by_execution_order()'])
+            'sort_by_execution_order()'
+            ])
 
     # This is because, in version of Tensorflow >= 1.5
     # The fold_constant transformation add a :0 to the input name of the 2nd node of the graph

@@ -71,6 +71,9 @@ if __name__ == "__main__":
     if framework.lower() == "onnx":
         model_path = os.path.abspath(
             os.path.join(network_dir, cfg.get('onnx_model')))
+    elif framework.lower() == "qonnx":
+        model_path = os.path.abspath(
+            os.path.join(network_dir, cfg.get('onnx_model')))
     elif framework.lower() == "tensorflow1":
         model_path = os.path.abspath(
             os.path.join(network_dir, cfg.get("tensorflow_frozen_pb")))

@@ -155,7 +155,7 @@ def demo(all_options):
         subprocess.run(cmd_args, check=True)
 
     if options.device == "cpu":
-        python_script = "onnx_tf_video_demo.py"
+        python_script = "cpu_video_demo.py"
         python_script = os.path.abspath(
             os.path.join(os.path.dirname(__file__), python_script))
         yaml_file_path = os.path.join(options.generated_dir, "network.dump.yaml")
@@ -311,7 +311,9 @@ if __name__ == "__main__":
     else:
         args.pocl_dir = os.path.abspath(args.pocl_dir)
     pocl_file = os.path.join(args.pocl_dir, "mppa_kann_opencl.cl.pocl")
-    eval_env(args.bin_file, pocl_file, "kv3-2")
+
+    if "device" in args and args.device == "mppa":
+        eval_env(args.bin_file, pocl_file, "kv3-2")
 
     print(opt)
     args.func(opt)

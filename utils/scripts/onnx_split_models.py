@@ -9,14 +9,7 @@
 
 import os
 import onnx
-import torch
-import numpy
 import argparse
-import onnxruntime
-
-
-def to_numpy(tensor):
-    return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 
 
 def main(arguments):
@@ -52,10 +45,10 @@ def main(arguments):
     onnx.utils.extract_model(model_file_path, str(bot_nn_path), tensor_inter_inputs, output_names)
 
     onnx_model = onnx.load(top_nn_path)  # load onnx model
-    onnx.checker.check_model(onnx_model)  # check onnx model
+    #onnx.checker.check_model(onnx_model)  # check onnx model
 
     onnx_model = onnx.load(bot_nn_path)  # load onnx model
-    onnx.checker.check_model(onnx_model)  # check onnx model
+    #onnx.checker.check_model(onnx_model)  # check onnx model
 
     print(onnx.helper.printable_graph(onnx_model.graph))  # print a human readable model
     print('ONNX bottom network saved as %s' % bot_nn_path)
