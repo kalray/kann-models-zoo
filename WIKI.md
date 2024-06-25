@@ -39,11 +39,27 @@ So, to deploy your solution from an identified neural networks, the steps are al
 Please source the Kalray Neural Network™ python environment:</br>
 ``` $ source $HOME/.local/share/kann/venv*/bin/activate ```
 
-Hints:
-* If the python environment does not exist, please use the installation command:</br>
-``` kann-install ```
-* If the Kalray's AccessCore® environment does not exist, please source it at:</br>
-``` $ source /opt/kalray/accesscore/kalray.sh ```
+If it does not exist, please configure a specific virtual python environment:
+```bash
+export KANN_ENV=$HOME/.local/share/python3-kann-venv
+python3 -m venv $KANN_ENV
+```
+
+Source your python environment:
+```bash 
+source $KANN_ENV/bin/activate
+```
+
+Install local KaNN wheel and its dependencies (it supposed that release is install in $HOME):
+```bash
+pip install $HOME/ACE5.2.0/KaNN-generator/kann-5.2.0-py3*.whl
+```
+Finally, the python requirements of the repo:
+```bash 
+pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+```
+Please see kalray lounge install procedure detailed at:
+[link](https://lounge.kalrayinc.com/hc/en-us/articles/14613836001308-ACE-5-2-0-Content-installation-release-note-and-Getting-Started-Coolidge-v2)
 
 
 ## How models are packaged

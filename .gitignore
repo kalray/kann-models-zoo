@@ -1,4 +1,5 @@
 __pycache__/
+.archives/
 .idea/
 .vscode/
 .code/
@@ -9,8 +10,6 @@ tmp*/
 generated*/
 models/
 output/
-results/
-private/
 *.pyc
 *.pyx
 *.swp
