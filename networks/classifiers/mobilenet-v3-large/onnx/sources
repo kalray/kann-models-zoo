@@ -1,7 +1,7 @@
 lecture note reference:
-Searching for MobileNetV3, https://arxiv.org/pdf/1905.02244
+- Searching for MobileNetV3, https://arxiv.org/pdf/1905.02244
 
 repository or link:
-https://pytorch.org/vision/stable/models/generated/torchvision.models.mobilenet_v3_large.html#torchvision.models.mobilenet_v3_large
+- https://pytorch.org/vision/stable/models/generated/torchvision.models.mobilenet_v3_large.html#torchvision.models.mobilenet_v3_large
 
 citations:

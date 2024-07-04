@@ -1,3 +1,7 @@
 lecture note reference:
-repository or link: https://github.com/onnx/models/blob/main/vision/classification/resnet/model/resnet50-v2-7.onnx
+- Deep Residual Learning for Image Recognition, https://arxiv.org/pdf/1512.03385.pdf
+
+repository or link:
+- https://github.com/onnx/models/blob/5faef4c33eba0395177850e1e31c4a6a9e634c82/vision/classification/resnet/model/resnet101-v1-7.onnx
+
 citations:

@@ -10,7 +10,7 @@ input_nodes_shape:
 input_nodes_dtype:
     - "float32"
 output_nodes_name:
-    - output
+    - InceptionV1/Logits/Predictions/Softmax
 output_nodes_dtype:
     - "float32"
 output_nodes_shape:
