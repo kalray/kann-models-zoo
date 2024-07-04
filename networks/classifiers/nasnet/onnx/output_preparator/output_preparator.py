@@ -26,6 +26,13 @@ def softmax(x, axis=0):
     return res
 
 
+def process_nn_outputs(output):
+    output = output.squeeze()
+    output = softmax(output)
+    
+    return output
+
+
 def post_process(cfg, frame, nn_outputs, **kwargs):
     """
     Takes net output, draw metadata on the input image, and return the new image to draw
@@ -42,8 +49,7 @@ def post_process(cfg, frame, nn_outputs, **kwargs):
     # analyze the result
     assert len(nn_outputs) == 1
     output = list(nn_outputs.values())[0]
-    output = output.squeeze()
-    output = softmax(output)
+    output = process_nn_outputs(output)
     sorted_indices = output.argsort()
     legend = []
     # last <display> classes of the list, starting from the end

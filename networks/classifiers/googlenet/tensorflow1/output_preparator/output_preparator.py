@@ -21,6 +21,12 @@ def drawText(frame, lines, origin):
 
 classes = None
 
+
+def process_nn_outputs(output):
+   
+    return output
+
+
 #####################
 ## Post processing ##
 def post_process(cfg, frame, nn_outputs, **kwargs):
@@ -42,6 +48,7 @@ def post_process(cfg, frame, nn_outputs, **kwargs):
   # analyze the result
   assert len(nn_outputs) == 1
   output = list(nn_outputs.values())[0]
+  output = process_nn_outputs(output)
   sorted_indices = output.argsort()
   legend = []
   for i in sorted_indices[nb_classes-1:nb_classes-1-display:-1]: # last <display> classes of the list, starting from the end

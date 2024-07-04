@@ -26,6 +26,11 @@ def softmax(x, axis=0):
     return res
 
 
+def process_nn_outputs(output):
+    output = output.squeeze()
+    return output
+
+
 def post_process(cfg, frame, nn_outputs, **kwargs):
     """
     Takes net output, draw metadata on the input image, and return the new image to draw
@@ -42,16 +47,15 @@ def post_process(cfg, frame, nn_outputs, **kwargs):
     # analyze the result
     assert len(nn_outputs) == 1
     output = list(nn_outputs.values())[0]
-    output = output.squeeze()
-    output = softmax(output)
+    output = process_nn_outputs(output)
     sorted_indices = output.argsort()
     # sorted_indices = output.argsort()[-display:][::-1]
     legend = []
     # last <display> classes of the list, starting from the end
     for i in sorted_indices[nb_classes - 1:nb_classes - 1 - display:-1]:
         legend.append("{0:0.3f} - {1}".format(output[i], classes[i]))
-    print("Predictions: %s" % legend)
-    print("Predictions: %s" % sorted_indices)
+    # print("Predictions: %s" % legend)
+    # print("Predictions: %s" % sorted_indices)
     drawText(frame, legend, (10, 30))
 
     # results = []
