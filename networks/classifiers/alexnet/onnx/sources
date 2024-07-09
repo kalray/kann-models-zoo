@@ -3,7 +3,7 @@ lecture note reference:
 - One weird trick for parallelizing convolutional neural networks, https://arxiv.org/pdf/1404.5997.pdf
 
 repository or link reference:
-- https://github.com/onnx/models/blob/main/vision/classification/alexnet/
+- https://github.com/onnx/models/tree/5faef4c33eba0395177850e1e31c4a6a9e634c82/vision/classification/alexnet
 - https://pytorch.org/vision/stable/models/generated/torchvision.models.alexnet.html#torchvision.models.alexnet
 
 citations:

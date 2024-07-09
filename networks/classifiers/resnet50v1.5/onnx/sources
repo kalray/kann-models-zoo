@@ -1,7 +1,7 @@
 lecture note reference:
-Deep Residual Learning for Image Recognition, https://arxiv.org/pdf/1512.03385.pdf
+- Deep Residual Learning for Image Recognition, https://arxiv.org/pdf/1512.03385.pdf
 
 repository or link:
-https://pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html#torchvision.models.resnet50
+- https://pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html#torchvision.models.resnet50
 
 citations:
