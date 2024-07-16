@@ -69,10 +69,8 @@ Each model is packaged to be compiled and run for KaNN SDK. It is one DIRectory,
 - a post-processing directory: `output_preparator/`
 - a model dir: with model file (*.pb, *.onnx, *.tflite) depending of its implementation
 - configuration files (*.yaml) for generation:
-    * network.yaml :           batch 1 - FP32 - nominal performance
-    * network_fp16.yaml :      batch 1 - FP16 - nominal performance
-    * network_best.yaml : FP16/INT8* - best performance (including batch, fit memory alignment)
-    NB: INT8 is for *.tflite model only
+    * network_f16.yaml :  batch 1 - FP16 - nominal performance
+    * network_i8.yaml :   batch 1 - FP16/Q-INT8 - nominal performance
 - sources : model reference paper (arxiv, iccv, ..), open-source repository (github, ...)
 - license : associated to the model proposed 
 
