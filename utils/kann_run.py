@@ -66,7 +66,7 @@ def infer(all_options):
         i += 1
     inference_log_path = _inference_log_path
 
-    # Generate command to run and run it
+    # Generate command to run
     cmd = [args.bin_file, serialized_bin_file, iodir]
     try:
         print("Running: {}".format(" ".join(cmd)))
@@ -144,6 +144,12 @@ def demo(all_options):
         cmd_args += [f"--kernel-binaries-dir={os.path.dirname(pocl_file)}"]
         cmd_args += [options.generated_dir]
         cmd_args += [options.src]
+        if options.save_img:
+            cmd_args += [f"--save-img"]
+        if options.no_replay:
+            cmd_args += [f"--no-replay"]
+        if options.no_display:
+            cmd_args += [f"--no-display"]
         cmd_args += all_options[1]
         print(f"Running: {' '.join(cmd_args)}\n")
         subprocess.run(cmd_args, check=True)
@@ -156,6 +162,12 @@ def demo(all_options):
         cmd_args = ["python3", python_script]
         cmd_args += [yaml_file_path]
         cmd_args += [options.src]
+        if options.save_img:
+            cmd_args += [f"--save-img"]
+        if options.no_replay:
+            cmd_args += [f"--no-replay"]
+        if options.no_display:
+            cmd_args += [f"--no-display"]
         cmd_args += all_options[1]
         print(f"Running: {' '.join(cmd_args)}\n")
         subprocess.run(cmd_args, check=True)
@@ -198,9 +210,6 @@ if __name__ == "__main__":
     demo_subparser.add_argument(
         "--device", "-d", default="mppa", choices=["mppa", "cpu"],
         help="Select the device to run the demo on")
-    demo_subparser.add_argument(
-        "--verbose", "-v", action='store_true',
-        help="Show verbosity of video demo script")
     demo_subparser.add_argument(
         '--no-display', action='store_true',
         help="Disable graphical display")

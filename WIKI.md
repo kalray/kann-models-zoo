@@ -101,10 +101,10 @@ Each model is packaged to be compiled and run for KaNN SDK. It is one DIRectory,
 
 Use the following command to generate an model to run on the MPPA®:
 ```bash
-$ ./generate <configuration_file.yaml> -d <generated_path_dir>
-...
+# $ ./generate <configuration_file.yaml> -d <generated_path_dir>
+./generate networks/object-detection/yolov8n-relu/onnx/network_f16.yaml -d yolov8n
 ```
-It will provide you into the path directory `generated_path_dir`: 
+It will provide you into the path directory `generated_path_dir`, here called "yolov8n": 
 * a serialized binary file (network contents with runtime and context information)
 * a network.dump.yaml file (a copy of the configuration file used)
 * a log file of the generation
@@ -119,60 +119,69 @@ on the MPPA®.
 
 Use the following command to start quickly the inference:
 ```bash
-$ ./run infer <generated_path_dir>
+# $ ./run infer <generated_path_dir>
+./run infer yolov8n
 ```
 
 Use the following command to start quickly the inference on 25 frames:
 ```bash
-$ ./run --nb-frames=25 infer <generated_path_dir>
+# $ ./run infer <generated_path_dir> --nb-frames=25
+./run infer yolov8n -n 25
 ```
 
-(ONNX only) Use the following command to generate a new neural network with new input size H,W:
-```bash
-$ ./run infer <generated_path_dir> --force-hw=640,480
-```
-
-Use the following command to get more options (data, PoCL file custom, etc):
+Use the following command to get more details on options:
 ```bash
 $ ./run --help        # for general options
 # or
 $ ./run infer --help  # for infer subcommand options
+# or
+$ ./run demo --help  # for infer subcommand options
 ```
 
 ## Run neural network as a demo
-Use the following command to start quickly the inference of the IR model just generated:
+Use the following command to start quickly the inference of the model just generated into a video pipeline.
+It will include the inference into a pre- and post-processing scripts with a video/image stream input supported
+by OpenCV python api. 
+
 ```bash
-$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg
+# $ ./run demo <generated_path_dir> <source_file_path>
+./run demo yolov8n ./utils/sources/cat.jpg
 ```
+
+All timings are logged by the video demo script, and reported such as:
++ read : time to import frame
++ pre  : pre processing time
++ send : copy data to FIFO in 
++ kann : wait until the FIFO out is filled (including the neural network inference)
++ post : post processing time
++ draw : draw annotation on input frame
++ show : time to display the image though opencv
++ total: sum of the previous timings
+
 
 To disable the L2 cache at runtime (now implicit, a message will warn you):
 ```bash
-$ ./run --l2-off demo <generated_path_dir> ./utils/sources/street/street_0.jpg
+./run --l2-off demo yolov8n ./utils/sources/dog.jpg
 ```
 
 To disable the display:
 ```bash
-$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg --no-display
+./run demo yolov8n ./utils/sources/street/street_0.jpg --no-display
 ```
 
 To disable the replay (for a video or a image):
 ```bash
-$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg --no-replay
+$ ./run demo yolov8n ./utils/sources/street/street_0.jpg --no-replay
 ```
 
 Save the last frame annotated into the current dir:
 ```bash
-$ ./run demo <generated_path_dir> ./utils/sources/street/street_0.jpg --no-replay --save-img
-```
-
-To show help, use:
-```bash
-$ ./run demo --help
+$ ./run demo yolov8n ./utils/sources/street/street_0.jpg --no-replay --save-img --verbose
 ```
 
 To run on the CPU target (in order to compare results):
 ```bash
-$ ./run demo --device=cpu <configuration_file.yaml> ./utils/sources/street_0.jpg --verbose
+$ ./run demo --device=cpu yolov8n ./utils/sources/street/street_0.jpg --no-replay --save-img --verbose
 ```
 
 Demonstration scripts are based on python API, host application does not use pipelining for example.
