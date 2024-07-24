@@ -155,7 +155,7 @@ def demo(all_options):
         subprocess.run(cmd_args, check=True)
 
     if options.device == "cpu":
-        python_script = "onnx_tf_video_demo.py"
+        python_script = "cpu_video_demo.py"
         python_script = os.path.abspath(
             os.path.join(os.path.dirname(__file__), python_script))
         yaml_file_path = os.path.join(options.generated_dir, "network.dump.yaml")
