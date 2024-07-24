@@ -1,4 +1,4 @@
-# Kalray Neural Network Models
+# WIKI - Kalray Neural Network Models Zoo
 
 <img width="50%" src="./utils/materials/mppa-processor.jpg"></a></br>
 
@@ -7,19 +7,24 @@
 ![Object-Detect](https://img.shields.io/badge/Object%20detection-31-blue)
 ![Segmentation](https://img.shields.io/badge/Segmentation-10-blue)</br>
 
-
 The KaNN™ Model Zoo repository provides a list of neural networks models __ready to compile & run__ on MPPA®
 manycore processor. This comes on top of KaNN™ tool for model generation and enhance __AI solutions__ onto Kalray
 processor.
 
+
 ## Table of contents
-* [Kalray neural networks (KaNN) framework description](#kalray-neural-networks-kann-framework-description)
-* [Pre-requisites: configure the SW environment](#pre-requisites-configure-the-sw-environment)
-* [How models are packaged](#how-models-are-packaged)
-* [Generate a model to run on the processor (MPPA®)](#generate-a-model-to-run-on-the-processor-mppa)
-* [Evaluate the neural network inference on the MPPA®](#evaluate-the-neural-network-inference-on-the-mppa)
-* [Run neural network as a demo](#run-neural-network-as-a-demo)
-* [Custom Layers for extended neural networks](#custom-layers-for-extended-neural-networks)
+
+- [WIKI - Kalray Neural Network Models Zoo](#wiki---kalray-neural-network-models-zoo)
+  - [Table of contents](#table-of-contents)
+  - [Kalray neural networks (KaNN) framework description](#kalray-neural-networks-kann-framework-description)
+  - [Pre-requisites: configure the SW environment](#pre-requisites-configure-the-sw-environment)
+  - [How models are packaged](#how-models-are-packaged)
+  - [Generate a model to run on the processor (MPPA®)](#generate-a-model-to-run-on-the-processor-mppa)
+  - [Evaluate the neural network inference on the MPPA®](#evaluate-the-neural-network-inference-on-the-mppa)
+  - [Run neural network as a demo](#run-neural-network-as-a-demo)
+  - [Jupyter Notebooks](#jupyter-notebooks)
+  - [Custom Layers for extended neural networks](#custom-layers-for-extended-neural-networks)
+
 
 ## Kalray neural networks (KaNN) framework description
 
@@ -104,17 +109,19 @@ Use the following command to generate an model to run on the MPPA®:
 # $ ./generate <configuration_file.yaml> -d <generated_path_dir>
 ./generate networks/object-detection/yolov8n-relu/onnx/network_f16.yaml -d yolov8n
 ```
-It will provide you into the path directory `generated_path_dir`, here called "yolov8n": 
+
+It will provide you into the path directory `generated_path_dir`, here called "yolov8n":
 * a serialized binary file (network contents with runtime and context information)
 * a network.dump.yaml file (a copy of the configuration file used)
 * a log file of the generation
 
 Please refer to Kalray documentation and KaNN user manual provided for more details !
 
+
 ## Evaluate the neural network inference on the MPPA®
 
-Kalray's toolchain integrates its own host application `kann_opencl_cnn`to run compiled model.
-it will be called using the ./run script to evaluate the performance of the Neural Network
+Kalray's toolchain integrates its own host application named `kann_opencl_cnn` to run compiled model.
+it will be called using the `./run` script to evaluate the performance of the Neural Network
 on the MPPA®.
 
 Use the following command to start quickly the inference:
@@ -139,6 +146,7 @@ $ ./run demo --help  # for infer subcommand options
 ```
 
 ## Run neural network as a demo
+
 Use the following command to start quickly the inference of the model just generated into a video pipeline.
 It will include the inference into a pre- and post-processing scripts with a video/image stream input supported
 by OpenCV python api. 
@@ -188,6 +196,38 @@ Demonstration scripts are based on python API, host application does not use pip
 The video pipeline is not FULLY OPTIMIZED and requires custom developments to benefit of the full
 performance of the MPPA®, depending of your own environment and system. Do not hesitate to contact
 our services <support@kalrayinc.com> to optimize your solution.
+
+Please take a look to our notebooks included in the repository
+
+
+## Jupyter Notebooks
+
+You could notice that a DIR called "notebooks" is available on this repository. Take a look on this to:
+* [quick start](./notebooks/quick_start.ipynb): generate and run quickly a neural networks from the kann-models-zoo 
+
+To execute it, please set up your python environment and be sure you could use correctly your preferred web browser
+(firefox, google-chrome, ... for example) :
+
+```bash
+# source YOUR python environment if not done
+source $KANN_ENV/bin/activate
+# install jupyter notebook package
+pip install jupyter
+# wait that all dependencies are installed ...
+```
+
+From kann-models-zoo home directory, then open the desired notebook:
+```bash
+jupyter notebook notebooks/quick_start.ipynb &
+```
+
+A new window would appear such as below:
+
+<img width="100%" src="./utils/materials/quick_start_notebook.png"></a></br>
+
+Finally, select & click to "Run" > "Run All Cells (Shift+Enter)" to execute all commands-in-line ...
+et voilà 😃.
+
 
 ## Custom Layers for extended neural networks
 
