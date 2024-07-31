@@ -1,11 +1,13 @@
 __pycache__/
 .archives/
-.idea/
-.vscode/
 .code/
 .cache/
-.tmp*/
+.idea/
+.ipynb_checkpoints/
 .local/
+.tmp*/
+.vscode/
+.kvx-mppa.version
 tmp*/
 generated*/
 models/
