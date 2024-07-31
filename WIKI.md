@@ -2,7 +2,7 @@
 
 <img width="50%" src="./utils/materials/mppa-processor.jpg"></a></br>
 
-![ACE5.2.0](https://img.shields.io/badge/Coolidge2-ACE5.2.0-g)
+![ACE5.3.0](https://img.shields.io/badge/Coolidge2-ACE5.3.0-g)
 ![Classifiers](https://img.shields.io/badge/Classifiers-29-blue)
 ![Object-Detect](https://img.shields.io/badge/Object%20detection-31-blue)
 ![Segmentation](https://img.shields.io/badge/Segmentation-10-blue)</br>
@@ -17,40 +17,41 @@ processor.
 - [WIKI - Kalray Neural Network Models Zoo](#wiki---kalray-neural-network-models-zoo)
   - [Table of contents](#table-of-contents)
   - [Kalray neural networks (KaNN) framework description](#kalray-neural-networks-kann-framework-description)
-  - [Pre-requisites: configure the SW environment](#pre-requisites-configure-the-sw-environment)
+  - [Pre-requisites: SW environment \& configuration](#pre-requisites-sw-environment--configuration)
   - [How models are packaged](#how-models-are-packaged)
-  - [Generate a model to run on the processor (MPPA®)](#generate-a-model-to-run-on-the-processor-mppa)
+  - [Generate a model to run on the MPPA®](#generate-a-model-to-run-on-the-mppa)
   - [Evaluate the neural network inference on the MPPA®](#evaluate-the-neural-network-inference-on-the-mppa)
   - [Run neural network as a demo](#run-neural-network-as-a-demo)
-  - [Jupyter Notebooks](#jupyter-notebooks)
   - [Custom Layers for extended neural networks](#custom-layers-for-extended-neural-networks)
+  - [Jupyter Notebooks](#jupyter-notebooks)
 
 
 ## Kalray neural networks (KaNN) framework description
 
 <img width="500" src="./utils/materials/CNN.png"></a></br>
 
-KaNN is a Kalray software purpose, available in the SDK AccessCore Embedded (ACE) offer. It 
-leverages the possibility to parse and analyze a Convolution Neural Network (figure above) 
-from different SW environments such as ONNX, Tensorflow, TFlite, PyTorch; and generate a 
-MPPA code to achieve the best performance efficiency. This repository does not contain any 
-information about the use of hte API, but it helps to deploy AI solutions. For details, 
-please do not hesitate to read the documentation 😏 or contact us directly.
+KaNN is a Kalray software purpose, available in the SDK AccessCore Embedded (ACE) offer. It
+ leverages the possibility to parse and analyze a Convolution Neural Network (figure above)
+ from different SW environments such as ONNX, Tensorflow, TFlite, PyTorch; and generate a
+ MPPA code to achieve the best performance efficiency. This repository does not contain any
+ information about the use of the API, but it helps to deploy AI solutions. For details,
+ please do not hesitate to read the documentation 😏 or contact us directly.
 
 So, to deploy your solution from an identified neural networks, the steps are all easy 😃 :
 1. From a CNN, generate a model (no HW dependencies)
 2. Run model from demo application (python + cpp host application, included in the repository
    and ACE software)
 
-## Pre-requisites: configure the SW environment
+
+## Pre-requisites: SW environment & configuration
 
 Source the Kalray's AccessCore® environment, at the following location:
 ```bash
  source /opt/kalray/accesscore/kalray.sh
  ```
-and check that `$KALRAY_TOOLCHAIN_DIR` is not empty.
+and check the envrionment variable `$KALRAY_TOOLCHAIN_DIR` is not empty.
 
-If it does not exist, please configure a specific virtual python environment:
+If it does not exist, please configure a specific virtual python environment (recommended):
 ```bash
 export KANN_ENV=$HOME/.local/share/python3-kann-venv
 python3 -m venv $KANN_ENV
@@ -60,16 +61,17 @@ Source your python environment:
 source $KANN_ENV/bin/activate
 ```
 
-Install local KaNN wheel and its dependencies (it supposed that release is install in $HOME):
+Install local KaNN wheel and all dependencies (it supposed the ACE Release is installed in `$HOME` directory):
 ```bash
-pip install $HOME/ACE5.2.0/KaNN-generator/kann-5.2.0-py3*.whl
+pip install $HOME/ACE5.3.0/KaNN-generator/kann-5.3.0-py3*.whl
 ```
-Finally, the python requirements of the repo:
+
+Finally, do the same for the python requirements of the repo:
 ```bash 
 pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 ```
 Please see kalray lounge install procedure detailed at:
-[link](https://lounge.kalrayinc.com/hc/en-us/articles/14613836001308-ACE-5-2-0-Content-installation-release-note-and-Getting-Started-Coolidge-v2)
+[link](https://lounge.kalrayinc.com/hc/en-us/articles/)
 
 Source your python environment:
 ```bash 
@@ -102,7 +104,7 @@ Each model is packaged to be compiled and run for KaNN SDK. It is one DIRectory,
 - license : associated to the model proposed
 
 
-## Generate a model to run on the processor (MPPA®)
+## Generate a model to run on the MPPA®
 
 Use the following command to generate an model to run on the MPPA®:
 ```bash
@@ -147,9 +149,10 @@ $ ./run demo --help  # for infer subcommand options
 
 ## Run neural network as a demo
 
-Use the following command to start quickly the inference of the model just generated into a video pipeline.
-It will include the inference into a pre- and post-processing scripts with a video/image stream input supported
-by OpenCV python api. 
+Use the following command to start quickly the inference of the model just
+generated into a video pipeline. It will include the inference into a pre-
+and post-processing scripts with a video/image stream input, supported by
+OpenCV python api.
 
 ```bash
 # $ ./run demo <generated_path_dir> <source_file_path>
@@ -159,13 +162,12 @@ by OpenCV python api.
 All timings are logged by the video demo script, and reported such as:
 + read : time to import frame
 + pre  : pre processing time
-+ send : copy data to FIFO in 
++ send : copy data to FIFO in
 + kann : wait until the FIFO out is filled (including the neural network inference)
 + post : post processing time
 + draw : draw annotation on input frame
 + show : time to display the image though opencv
 + total: sum of the previous timings
-
 
 To disable the L2 cache at runtime (now implicit, a message will warn you):
 ```bash
@@ -197,42 +199,13 @@ The video pipeline is not FULLY OPTIMIZED and requires custom developments to be
 performance of the MPPA®, depending of your own environment and system. Do not hesitate to contact
 our services <support@kalrayinc.com> to optimize your solution.
 
-Please take a look to our notebooks included in the repository
-
-
-## Jupyter Notebooks
-
-You could notice that a DIR called "notebooks" is available on this repository. Take a look on this to:
-* [quick start](./notebooks/quick_start.ipynb): generate and run quickly a neural networks from the kann-models-zoo 
-
-To execute it, please set up your python environment and be sure you could use correctly your preferred web browser
-(firefox, google-chrome, ... for example) :
-
-```bash
-# source YOUR python environment if not done
-source $KANN_ENV/bin/activate
-# install jupyter notebook package
-pip install jupyter
-# wait that all dependencies are installed ...
-```
-
-From kann-models-zoo home directory, then open the desired notebook:
-```bash
-jupyter notebook notebooks/quick_start.ipynb &
-```
-
-A new window would appear such as below:
-
-<img width="100%" src="./utils/materials/quick_start_notebook.png"></a></br>
-
-Finally, select & click to "Run" > "Run All Cells (Shift+Enter)" to execute all commands-in-line ...
-et voilà 😃.
+Please take a look to our notebooks included in the repository (see [Jupyter Notebooks](#jupyter-notebooks))
 
 
 ## Custom Layers for extended neural networks
 
 According to the Kalray's documentation in KaNN manual, users have the possibility to integrate
-custom layers in case of layer are not supported by KaNN. So, follow those steps (more details 
+custom layers in case of layer are not supported by KaNN. So, follow those steps (more details
 in KaNN user manual):
 1. Implement the python function callback to ensure that KaNN generator is able to support the Layer
 2. Implement the layer python class to ensure that arguments are matching with the C function
@@ -275,3 +248,45 @@ or on the cpu directly:
 ```bash
 ./run demo --device=cpu yolov8n ./utils/sources/cat.jpg --verbose
 ```
+
+## Jupyter Notebooks
+
+You could notice that a DIR called `./notebooks/` is available in this repository. Take a look to:
+* [x] [quick start](./notebooks/quick_start.ipynb): generate and run quickly a neural networks from
+   the kann-models-zoo
+
+To execute it, please set up your python environment and be sure you could use correctly your preferred web browser
+(firefox, google-chrome, ... for example) :
+
+```bash
+# source YOUR python environment if not done
+source $KANN_ENV/bin/activate
+# install jupyter notebook package
+pip install jupyter
+# wait that all dependencies are installed ...
+```
+
+From kann-models-zoo home directory, then open the desired notebook:
+```bash
+jupyter notebook notebooks/quick_start.ipynb &
+```
+
+A new window would appear such as below:
+
+<img width="100%" src="./utils/materials/quick_start_notebook.png"></a></br>
+
+Finally, select & click to `Run` > `Run All Cells (Shift+Enter)` to execute all commands-in-line ...
+et voilà 😃. Do not forget restart the kernel if needed and to kill the jupyter notebook server once
+terminated.
+
+Other notebooks will be soon available:
+* [ ] advanced : import a neural network and create a package to run on the MPPA
+* [ ] graph inspection: analyze a neural network generated by kann
+* [ ] fine-tune: optimize the generation of a neural network
+* [ ] custom layer (basic) : use the custom layer already implemented in this repository
+* [ ] custom layer (advanced): implement a custom layer to support a specific network
+* [ ] custom kernel (advanced): implement a custom kernel to support a specific network
+* [ ] custom kernel (expert): optimie a custom kernel to accelerate a specific network
+
+Authors: Quentin Muller <qmuller@kalrayinc.com>
+
