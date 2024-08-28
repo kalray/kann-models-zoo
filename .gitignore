@@ -10,6 +10,7 @@ tmp*/
 generated*/
 models/
 output/
+.kvx-mppa.version
 *.pyc
 *.pyx
 *.swp
