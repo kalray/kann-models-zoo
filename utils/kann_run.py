@@ -311,7 +311,9 @@ if __name__ == "__main__":
     else:
         args.pocl_dir = os.path.abspath(args.pocl_dir)
     pocl_file = os.path.join(args.pocl_dir, "mppa_kann_opencl.cl.pocl")
-    eval_env(args.bin_file, pocl_file, "kv3-2")
+
+    if "device" in args and args.device == "mppa":
+        eval_env(args.bin_file, pocl_file, "kv3-2")
 
     print(opt)
     args.func(opt)

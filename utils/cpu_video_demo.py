@@ -237,7 +237,7 @@ def run_demo(
             out = {k: o for o, k in zip(outs, config['output_nodes_name'])}
 
             t[3] = time.perf_counter()  # POST-PROCESS FRAME ####################
-            frame = output_preparator.post_process(config, frame, out, device='cpu')
+            frame = output_preparator.post_process(config, frame, out, device='cpu', dbg=verbose)
 
             t[4] = time.perf_counter()   # ANNOTATE FRAME #######################
             annotate_frame(frame, t[3] - t[2])
@@ -370,7 +370,7 @@ def run_demo(
     type=click.STRING,
     required=True)
 @click.option(
-    '--verbose',
+    '--verbose', '-v',
     is_flag=True,
     help="Display detection and time spent into post-process tasks")
 @click.option(
@@ -488,7 +488,7 @@ def main(
         os.environ["OPENCV_OPENCL_DEVICE"] = "disabled"
         os.environ["OPENCV_OPENCL_RUNTIME"] = "null"
         # Manage window position and size
-        window_info = getTiledWindowsInfo()
+        window_info = None if no_display else getTiledWindowsInfo()
         assert (no_display or window_info is not None)
 
         # run demo
