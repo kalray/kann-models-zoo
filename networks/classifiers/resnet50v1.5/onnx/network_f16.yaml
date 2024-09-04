@@ -1,6 +1,6 @@
 name: ResNet50-v1.5
 framework: onnx
-onnx_model: ./models/resnet50.onnx
+onnx_model: ./models/resnet50-v1.5.onnx
 onnx_graph_optim: true
 
 input_nodes_name:

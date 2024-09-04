@@ -1,16 +1,16 @@
-name: ResNext50
+name: SqueezeNet-V1
 framework: onnx
-onnx_model: ./models/resnext50.onnx
+onnx_model: ./models/squeezenet-v1.onnx
 onnx_graph_optim: true
 
 input_nodes_name:
-    - images
+    - data_0
 input_nodes_shape:
     - [224, 1, 224, 3]
 output_nodes_name:
-    - output
+    - softmaxout_1
 output_nodes_shape:
-    - [1, 1000]
+    - [1, 1, 1, 1000]
 
 generate_options:
     arch: "kv3-2"
