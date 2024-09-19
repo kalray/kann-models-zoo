@@ -25,7 +25,7 @@ def drawText(frame, lines, origin):
 
 def process_nn_outputs(o):
     o = o.squeeze()
-    return numpy.exp(o) / numpy.sum(numpy.exp(o), axis=0)
+    return o
 
 
 def post_process(cfg, frame, nn_outputs, **kwargs):

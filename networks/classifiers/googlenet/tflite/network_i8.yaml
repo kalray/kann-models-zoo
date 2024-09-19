@@ -7,7 +7,7 @@ input_nodes_name:
 input_nodes_shape:
     - [224, 1, 224, 3]
 output_nodes_name:
-    - InceptionV1/Logits/Predictions/Reshape_1
+    - InceptionV1/Logits/Predictions/Reshape_prequant
 output_nodes_shape:
     - [1001]
 

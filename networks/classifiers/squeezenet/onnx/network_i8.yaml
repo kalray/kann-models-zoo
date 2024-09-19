@@ -1,6 +1,6 @@
 name: SqueezeNet-V1
 framework: onnx
-onnx_model: ./models/squeezenet-v1-q.onnx
+onnx_model: ./models/squeezenet-v1-q-s.onnx
 onnx_graph_optim: true
 
 input_nodes_name:
