@@ -14,7 +14,6 @@ Please find the complete list here: </br>
 |:----------------------------------------------------------|--------:|-------:|:-------:|:--------------|:------------|:----------------------------------------------------|
 | [DeeplabV3Plus-mobilenet-V2](./deeplabv3plus-mobilenetv2) |  17.4 G |  2.0 M | 512x512 | VOC-COCO 2017 | tensorflow1 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [DeeplabV3Plus-Resnet50](./deeplabv3plus-resnet50)        |  65.3 G | 12.0 M | 416x416 | COCO 2014     | tensorflow1 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
-| [DeeplabV3Plus-Resnet50](./deeplabv3plus-resnet50)        |  65.3 G | 12.0 M | 416x416 | COCO 2014     | onnx        | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [FCN-Resnet50](./fcn_resnet50)                            | 276.9 G | 32.9 M | 512x512 | VOC-COCO 2017 | onnx        | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [FCN-Resnet101](./fcn_resnet101)                          | 432.2 G | 51.8 M | 512x512 | VOC-COCO 2017 | onnx        | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [UNet-2D-medical](./unet2d-tiny-med)                      |  24.4 G |  7.7 M | 256x256 | MRI-BRAIN     | onnx        | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |

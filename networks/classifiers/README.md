@@ -28,11 +28,11 @@ Please find the complete list here: </br>
 | [efficientNet-B0](./efficientnet-b0)         | 1.004 G  | 5.26 M   | 77.69 % | 93.53 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [efficientNet-B4](./efficientnet-b4)         | 11.727 G | 16.83 M  | 83.38 % | 96.59 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [efficientNetLite-B4](./efficientnetlite-b4) | 2.785 G  | 12.96 M  | 80.4 %  | -       | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
-| [googleNet](./googlenet)                     | 3.014 G  | 6.61 M   | 69.8 %  | 89.6 %  | tf1, tflite | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
+| [googleNet](./googlenet)                     | 3.014 G  | 6.61 M   | 69.8 %  | 89.6 %  | tf1         | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [googleNet](./googlenet)                     | 3.014 G  | 6.62 M   | 69.8 %  | 89.5 %  | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [inception-resnetv2](./inception-resnetv2)   | 13.27 G  | 55.9 M   | 80.3 %  | 95.3 %  | tf1, tflite | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [inception-V3](./inception-v3)               | 11.42 G  | 27.16 M  | 77.2 %  | 93.4 %  | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
-| [mobileNet-V1](./mobilenet-v1)               | 1.124 G  | 4.16 M   | 70.9 %  | 89.9 %  | tf1, tflite | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
+| [mobileNet-V1](./mobilenet-v1)               | 1.124 G  | 4.16 M   | 70.9 %  | 89.9 %  | tf1         | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [mobileNet-V2](./mobilenet-v2)               | 0.893 G  | 3.54 M   | 71.88 % | 90.29 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [mobileNet-V3-large](./mobilenet-v3-large)   | 0.465 G  | 5.47 M   | 74.04 % | 91.34 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [nasnet](./nasnet)                           | 0.650 G  | 4.36 M   | 73.45 % | 91.51 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
@@ -43,14 +43,14 @@ Please find the complete list here: </br>
 | [resnet50](./resnet50)                       | 7.770 G  | 25.63 M  | 74.93 % | 92.38 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [resnet50v1.5](./resnet50v1.5/onnx)          | 8.234 G  | 25.53 M  | 76.13 % | 92.86 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [resnet50v1.5](./resnet50v1.5/tflite)        | 8.234 G  | 25.53 M  | - %     | - %     | tflite      | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
-| [resnet50v2](./resnet50v2)                   | 8.209 G  | 25.5 M   | 75.81 % | 92.82 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
+| [resnet50v2](./resnet50v2)                   | 8.209 G  | 25.5 M   | 75.81 % | 92.82 % | onnx        | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [resnext50](./resnext50)                     | 8.436 G  | 25.0 M   | 77.62 % | 93.69 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [resnet101](./resnet101)                     | 15.221 G | 44.70 M  | 77.37 % | 93.54 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [resnet152](./resnet152)                     | 22.680 G | 60.4 M   | 78.31 % | 94.04 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [squeezeNet](./squeezenet)                   | 0.714 G  | 1.23 M   | 58.17 % | 80.62 % | onnx, qonnx | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [vgg-16](./vgg-16)                           | 31.006 G | 138.36 M | 71.3 %  | 90.1 %  | tf1, tflite | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 | [vgg-19](./vgg-19)                           | 37.683 G | 12.85 M  | 71.3 %  | 90.0 %  | tf1, tflite | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
-| [xception](./xception)                       | 9.07 G   | 22.9 M   | 79.0 %  | 94.5 %  | tf1, tflite | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
+| [xception](./xception)                       | 9.07 G   | 22.9 M   | 79.0 %  | 94.5 %  | tf1         | ILSVRC 2012 | ![Pass](https://img.shields.io/badge/ACE5.3-pass-g) |
 <!-- END AUTOMATED TABLE -->
 
 ![Ext](https://img.shields.io/badge/ACE5.3-ext-yellow) means that you have to use Custom layer
