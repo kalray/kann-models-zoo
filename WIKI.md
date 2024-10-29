@@ -100,9 +100,9 @@ Each model is packaged to be compiled and run for KaNN SDK. It is one DIRectory,
 - configuration files (*.yaml) for generation:
     * network_f16.yaml :  batch 1 - FP16 - nominal performance
     * network_i8.yaml :   batch 1 - FP16/Q-INT8 - nominal performance
-- sources : model reference paper (arxiv, iccv, ..), open-source repository (github, ...)
-- license : associated to the model proposed
 
+Models LICENSE and SOURCES are described individually in our HuggingFace space, available at:
+https://huggingface.co/Kalray
 
 ## Generate a model to run on the MPPA®
 

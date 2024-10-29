@@ -1,7 +1,0 @@
-lecture note reference:
-- Aggregated Residual Transformations for Deep Neural Networks, https://arxiv.org/pdf/1611.05431.pdf
-
-repository or link:
-- https://pytorch.org/vision/stable/models/generated/torchvision.models.resnext50_32x4d.html#torchvision.models.resnext50_32x4d
-
-citations:

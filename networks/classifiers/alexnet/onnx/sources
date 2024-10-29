@@ -1,9 +1,0 @@
-lecture note reference:
-- ImageNet Classification with Deep Convolutional Neural Networks, https://papers.nips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf
-- One weird trick for parallelizing convolutional neural networks, https://arxiv.org/pdf/1404.5997.pdf
-
-repository or link reference:
-- https://github.com/onnx/models/tree/5faef4c33eba0395177850e1e31c4a6a9e634c82/vision/classification/alexnet
-- https://pytorch.org/vision/stable/models/generated/torchvision.models.alexnet.html#torchvision.models.alexnet
-
-citations:
