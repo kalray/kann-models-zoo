@@ -3,6 +3,7 @@
 <img width="25%" src="./utils/materials/kalray_logo.png"></a></br>
 
 ![ACE5.3.0](https://img.shields.io/badge/Coolidge2-ACE--5.3.0-g)
+![ACE5.3.1](https://img.shields.io/badge/Coolidge2-ACE--5.3.1-g)
 ![Classifiers](https://img.shields.io/badge/Classifiers-29-blue)
 ![Object-Detect](https://img.shields.io/badge/Object%20detection-28-blue)
 ![Segmentation](https://img.shields.io/badge/Segmentation-8-blue)</br>
@@ -20,7 +21,7 @@ on our dedicated processor called MPPA® (last generation, the 3rd, is named Coo
   networks. Thanks to the runtime, it gives you then the opportunity to run the algorithm directly on the MPPA®
 * __runtime__ : optimized libraries (in ASM/C/C++) to execute each operation nodes.
 
-ACE 5.3.0 (KaNN) supports: Tensorflow, TFlite, ONNX and Pytorch/ONNX.
+ACE-5.3.0 / ACE-5.3.1 (KaNN) supports: Tensorflow, TFlite, ONNX and Pytorch/ONNX.
 
 ## Contents
 
@@ -97,5 +98,6 @@ Acceleration card(s):
 * ![U22](https://img.shields.io/badge/Ubuntu-22.04%20LTS-orange)
   ![Ker](https://img.shields.io/badge/Linux%20Kernel-5.15.0-red)
 * ![ACE](https://img.shields.io/badge/Coolidge2-ACE--5.3.0-g)
+* ![ACE](https://img.shields.io/badge/Coolidge2-ACE--5.3.1-g)
 * ![Python](https://img.shields.io/badge/Python-3.10-blue)
   ![Python](https://img.shields.io/badge/Python-3.11-blue)

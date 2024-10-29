@@ -3,6 +3,7 @@
 <img width="50%" src="./utils/materials/mppa-processor.jpg"></a></br>
 
 ![ACE5.3.0](https://img.shields.io/badge/Coolidge2-ACE5.3.0-g)
+![ACE5.3.1](https://img.shields.io/badge/Coolidge2-ACE5.3.1-g)
 ![Classifiers](https://img.shields.io/badge/Classifiers-29-blue)
 ![Object-Detect](https://img.shields.io/badge/Object%20detection-31-blue)
 ![Segmentation](https://img.shields.io/badge/Segmentation-10-blue)</br>
@@ -77,19 +78,6 @@ Source your python environment:
 ```bash 
 source $KANN_ENV/bin/activate
 ```
-
-Install local KaNN wheel and its dependencies (it supposed that release is install in $HOME):
-```bash
-pip install $HOME/ACE5.2.0/KaNN-generator/kann-5.2.0-py3*.whl
-```
-Finally, the python requirements of the repo:
-```bash 
-pip install torch==2.1.0+cpu --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
-```
-Please see kalray lounge install procedure detailed at:
-[link](https://lounge.kalrayinc.com/hc/en-us/articles/14613836001308-ACE-5-2-0-Content-installation-release-note-and-Getting-Started-Coolidge-v2)
-
 
 ## How models are packaged
 
