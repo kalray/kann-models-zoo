@@ -1,7 +1,0 @@
-lecture note reference:
-- Deep Residual Learning for Image Recognition, https://arxiv.org/pdf/1512.03385.pdf
-
-repository or link:
-- https://pytorch.org/vision/stable/models/generated/torchvision.models.resnet18.html#torchvision.models.resnet18
-
-citations:

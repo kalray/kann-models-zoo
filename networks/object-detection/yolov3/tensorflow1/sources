@@ -1,8 +1,0 @@
-lecture note reference:
-- YOLOv3: An Incremental Improvement, https://arxiv.org/pdf/1804.02767.pdf
-
-repository:
-- model: https://github.com/mystic123/tensorflow-yolo-v3/tree/master
-- weights: https://pjreddie.com/media/files/yolov3.weights
-
-citations:

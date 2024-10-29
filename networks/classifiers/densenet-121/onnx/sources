@@ -1,7 +1,0 @@
-lecture note reference:
-- Densely Connected Convolutional Networks, https://arxiv.org/pdf/1608.06993.pdf
-
-repository:
-- https://pytorch.org/vision/stable/models/generated/torchvision.models.densenet121.html#torchvision.models.densenet121
-
-citations:

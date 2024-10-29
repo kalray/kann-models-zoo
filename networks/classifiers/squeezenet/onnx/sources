@@ -1,7 +1,0 @@
-lecture note reference:
-- SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size, https://arxiv.org/pdf/1602.07360
-
-repository or link:
-- https://github.com/onnx/models/blob/5faef4c33eba0395177850e1e31c4a6a9e634c82/vision/classification/squeezenet/model/squeezenet1.0-12.onnx
-
-citations:
