@@ -1,3 +1,5 @@
+namespace kann;
+
 table Model {
     graph: [Graph];
 }
@@ -56,3 +58,4 @@ table Data {
 
 root_type Model;
 file_identifier 'KaNN';
+
